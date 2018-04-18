@@ -25,6 +25,7 @@ function tabHandler(onFocusHandler) {
   const el = document.createElement('input');
   el.setAttribute("disabled", "");
   el.autocomplete = "off";
+  el.tabIndex=0;
 
   el.setAttribute('style', [
     'border:0',
