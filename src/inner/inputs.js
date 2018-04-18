@@ -23,7 +23,7 @@ function number(params) {
 
 function tabHandler(onFocusHandler) {
   const el = document.createElement('input');
-  el.setAttribute("disabled", "disabled");
+  el.setAttribute("disabled", "");
   el.autocomplete = "off";
 
   el.setAttribute('style', [
