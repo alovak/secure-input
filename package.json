@@ -1,0 +1,18 @@
+{
+  "name": "PowerPayments",
+  "version": "1.0.0",
+  "main": "dist/power-payments.js",
+  "module": "dist/power-payments.cjs.js",
+  "devDependencies": {
+    "rollup": "^0.57.1"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "node test/test.js",
+    "pretest": "npm run build"
+  },
+  "files": [
+    "dist"
+  ]
+}

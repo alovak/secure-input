@@ -1,0 +1,6 @@
+FROM powerpayments/deployment
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+ADD . /usr/src/app
+RUN chmod +x ./scripts/*.sh

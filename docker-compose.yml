@@ -1,0 +1,20 @@
+version: '3'
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: sh
+    volumes:
+      - .:/usr/src/app
+      - /tmp/aws_bash_profile:/root/.ash_history
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile.pipeline
+    command: sh
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - /tmp/aws_bash_profile:/root/.ash_history

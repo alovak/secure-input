@@ -1,0 +1,39 @@
+image:
+  name: powerpayments/deployment
+  username: $DOCKER_USER
+  password: $DOCKER_PASSWORD
+options:
+  docker: true
+pipelines:
+  default:
+    - step: 
+        name: Build SDK
+        image: node:8.11-alpine
+        script: 
+          - npm install
+          - npm run build
+        artifacts:
+          - dist/**
+    - step:
+        name: Push to Staging
+        deployment: staging
+        script:
+          - export ACCOUNT_ID=$ACCOUNT_STAGING_ID
+          - export AWS_DEFAULT_REGION=us-east-1
+          - export S3_BUCKET=js.powerpayments.tech
+          - export CF_DISTRIBUTION_ID=E3EVA4NP8MBLPQ
+          - ./scripts/s3_deploy.sh
+          - ./scripts/clear_cf_cache.sh
+        artifacts:
+          - dist/**
+    - step:
+        name: Push to Production
+        deployment: production
+        trigger: manual
+        script:
+          - echo "Set production CF_DISTRIBUTION_ID and the rest" && exit 1
+          - export ACCOUNT_ID=$ACCOUNT_PRODUCTION_ID
+          - export AWS_DEFAULT_REGION=us-east-1
+          - export S3_BUCKET=js.powerpayments.io
+          - ./scripts/s3_deploy.sh
+          - ./scripts/clear_cf_cache.sh

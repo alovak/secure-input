@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <title>PowerPayments JS SDK Demo 2</title>
+		<link rel="stylesheet" href="../dist/bootstrap.min.css">
+        <style>
+            @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+
+            body {
+                font-family: 'Open Sans', sans-serif !important;
+            }
+        </style>
+
+
+        <script src="../dist/power-payments.js"></script>
+
+        <style>
+            .container {
+                max-width: 960px;
+            }
+
+            .border-top { border-top: 1px solid #e5e5e5; }
+            .border-bottom { border-bottom: 1px solid #e5e5e5; }
+            .border-top-gray { border-top-color: #adb5bd; }
+
+            .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+
+            .lh-condensed { line-height: 1.25; }
+
+            .PowerElement--focus {   
+                color:#495057;
+                background-color:#fff;
+                border-color:#80bdff;
+                outline:0;
+                box-shadow:0 0 0 .2rem rgba(0,123,255,.25)
+            }
+        </style>
+        <script>
+			var style = {
+				base: {
+					fontSize: '1rem',
+                    fontFamily: "'Open Sans', sans-serif",
+                    fontWeight: '400',
+                    lineHeight: '1.5',
+					color: "#495057",
+					fontSmoothing: 'antialiased',
+					'::placeholder': {
+						color: '#00ff00',
+                        fontSize: '1rem',
+					},
+                    ':focus': {
+                        fontWeight: '600'
+                    },
+                    ':hover': {
+                        color: 'green'
+                    }
+				},
+				invalid: {
+					color: '#e5424d',
+					':focus': {
+						color: '#303238',
+					},
+				},
+			};
+
+
+            var fonts = {
+                cssSrc: 'https://fonts.googleapis.com/css?family=Open+Sans:400,600'
+            };
+
+            var power = PowerPayments('key');
+            var elements = power.elements();
+            var card = elements.create('number', { placeholder: 'Your card number', style: style, fonts: fonts }).mount('#number');
+            var cvc = elements.create('cvc', { placeholder: 'Your cvc number', style: style, fonts: fonts }).mount('#cvc');
+            var exp = elements.create('exp', { placeholder: 'Exp', style: style, fonts: fonts }).mount('#exp');
+        </script>
+    </head>
+    <body>
+		<div class="container">
+            <div class="py-5 text-center">
+                <h2>Checkout form</h2>
+                <p class="lead">Below is an example form built entirely with Bootstrap's form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="cc-name">Name on card</label>
+                    <input class="form-control" id="cc-name" placeholder="" required="" type="text">
+                    <small class="text-muted">Full name as displayed on card</small>
+                    <div class="invalid-feedback">
+                        Name on card is required
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="number">Credit card number</label>
+                    <div id="number" class="form-control"></div>
+                    <div class="invalid-feedback">
+                        Credit card number is required
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="exp">Expiration</label>
+                    <div id="exp" class="form-control"></div>
+                    <div class="invalid-feedback">
+                        Expiration date required
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="cvc">CVV</label>
+                    <div id="cvc" class="form-control"></div>
+                    <div class="invalid-feedback">
+                        Security code required
+                    </div>
+                </div>
+            </div>
+		</div>
+
+    </body>
+</html>
+
