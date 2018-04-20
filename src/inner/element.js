@@ -14,8 +14,17 @@ export default function element(options) {
     this.applyStyle();
   });
 
-  this.channel.on('focus', () => {
+  this.focus = function() {
+    const container = window.parent.document.querySelector('iframe[name=' + this.id + ']').parentElement;
+    const safariInput = container.querySelector('.PowerElement--safari');
+
+    safariInput.focus();
+    safariInput.blur();
     this.element.focus();
+  };
+
+  this.channel.on('focus', () => {
+    this.focus();
   });
 
   this.mount = function() {
@@ -44,7 +53,7 @@ export default function element(options) {
     // to our element input (for Chrome, Safari).
     // For FireFox w
     document.body.append(tabHandler(() => {
-      this.element.focus();
+      this.focus();
     }));
 
     document.body.append(tabHandler(() => {
@@ -63,7 +72,7 @@ export default function element(options) {
     // we add one more tabHandler element as a first focusable element
     // so it will set focus as we expect. Read above.
     window.addEventListener('focus', (e) => {
-      this.element.focus();
+      this.focus();
     });
 
     return this.element;

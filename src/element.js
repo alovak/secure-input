@@ -1,5 +1,5 @@
 import channel from './channel';
-import { tabHandler } from './inner/inputs';
+import { tabHandler, createInvisibleInput } from './inner/inputs';
 
 var IFRAME_URL = 'iframe.html';
 
@@ -19,6 +19,8 @@ export default function element(type, options) {
       this.container.appendChild(this.tabHandler = tabHandler(() => {
         this.channel.say('focus');
       }));
+
+      this.container.appendChild(this.safariTabHandler = createInvisibleInput({ tabIndex: "-1", className: 'PowerElement--safari' }));
 
       this.channel.connect({ target: this.iframe.contentWindow, id: this.id });
       this.channel.say('mount', { type: type, options: options });

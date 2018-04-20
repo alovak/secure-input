@@ -21,11 +21,12 @@ function number(params) {
   this.element = el;
 }
 
-function tabHandler(onFocusHandler) {
+function createInvisibleInput(options) {
   const el = document.createElement('input');
-  el.setAttribute("disabled", "");
+
+  // el.setAttribute("disabled", "");
   el.autocomplete = "off";
-  el.tabIndex=0;
+  el.tabIndex= (options = options || {}).tabIndex || "0";
 
   el.setAttribute('style', [
     'border:0',
@@ -43,11 +44,21 @@ function tabHandler(onFocusHandler) {
     ''
   ].join('!important;'));
 
-  el.addEventListener('focus', function(event) {
-    onFocusHandler(event);
-  });
+  if (options.className) el.classList.add(options.className);
 
   return el;
 }
 
-export { number, tabHandler };
+function tabHandler(onFocusHandler) {
+  const el = createInvisibleInput();
+
+  if (onFocusHandler) {
+    el.addEventListener('focus', function(event) {
+      onFocusHandler(event);
+    });
+  }
+
+  return el;
+}
+
+export { number, tabHandler, createInvisibleInput };

@@ -8,6 +8,10 @@ function controller() {
 
   chan.connect({ target: window.parent, id: id, label: id });
   chan.ready();
+
+  window.addEventListener('blur', function() {
+    chan.say('blur');
+  });
 }
 
 controller();
