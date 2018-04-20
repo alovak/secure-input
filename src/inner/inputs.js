@@ -11,8 +11,6 @@ function addInputEvents(el, channel) {
 function number(params) {
   const el = document.createElement('input');
 
-  console.log(params);
-
   el.placeholder = params.options.placeholder;
   el.setAttribute('maxLength', '19');
 
@@ -24,9 +22,14 @@ function number(params) {
 function createInvisibleInput(options) {
   const el = document.createElement('input');
 
-  // el.setAttribute("disabled", "");
+  options = options || {};
+
   el.autocomplete = "off";
-  el.tabIndex= (options = options || {}).tabIndex || "0";
+
+  if (options.tabIndex == "-1") {
+    el.tabIndex = options.tabIndex;
+    // el.setAttribute("disabled", "");
+  }
 
   el.setAttribute('style', [
     'border:0',

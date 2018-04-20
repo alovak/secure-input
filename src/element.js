@@ -16,11 +16,13 @@ export default function element(type, options) {
 
       this.container.appendChild(this.createIFrame());
 
+      this.container.appendChild(this.safariTabHandler = createInvisibleInput({ tabIndex: "-1", className: 'PowerElement--safari' }));
+
       this.container.appendChild(this.tabHandler = tabHandler(() => {
+        console.log('tab handler focused');
         this.channel.say('focus');
       }));
 
-      this.container.appendChild(this.safariTabHandler = createInvisibleInput({ tabIndex: "-1", className: 'PowerElement--safari' }));
 
       this.channel.connect({ target: this.iframe.contentWindow, id: this.id });
       this.channel.say('mount', { type: type, options: options });
@@ -42,10 +44,10 @@ export default function element(type, options) {
       ''
     ].join('!important;'));
 
-    iframe.src = IFRAME_URL + "#style[base]=1";
+    iframe.src = IFRAME_URL + "?rnd=" + (Math.random() * 1e9 | 0);
 
     // iframe.width = '1px';
-    iframe.height = '1px';
+    iframe.height = '100px';
     iframe.frameborder = '0';
     iframe.allowTransparency = 'true';
     iframe.scrolling = "no";
@@ -59,12 +61,16 @@ export default function element(type, options) {
     const containerId = this.container.getAttribute("id");
     const label = (containerId && document.querySelector("label[for=" + containerId + "]"));
 
-    if (label) label.addEventListener('click', () => {
-      this.channel.say('focus');
-    });
+    // if (label) label.addEventListener('click', () => {
+    //   this.channel.say('focus');
+    // });
 
     this.container.addEventListener('click', () => {
       this.channel.say('focus');
+    });
+
+    this.iframe.addEventListener('focus', function() {
+      console.log('focus on iframe');
     });
   };
 
@@ -88,19 +94,37 @@ export default function element(type, options) {
   });
 
   this.channel.on('forwardFocus', (data) => {
+    console.log('got forwardFocus: ', data.direction);
     // https://allyjs.io/data-tables/focusable.html#iframe-element
     const focusable = Array.prototype.slice.call(document.querySelectorAll("a[href], area[href], button:not([disabled]), embed, input:not([disabled]), object, select:not([disabled]), textarea:not([disabled]), *[tabindex], *[contenteditable]"));
 
-    const elementIndex = focusable.indexOf(this.tabHandler);
+    const focusableElements = [];
+
+    focusable.forEach(function(el) {
+      const tabIndex = el.getAttribute("tabindex");
+      console.log('index: ', tabIndex);
+      if (!tabIndex || parseInt(tabIndex, 10) >= 0) {
+        focusableElements.push(el);
+      }
+    });
+
+    console.log(focusableElements);
+    console.log(focusableElements[1]);
+    console.log(this.tabHandler);
+
+    if (focusableElements[1] == this.tabHandler) console.log('equal!!!');
+
+    const elementIndex = focusableElements.indexOf(this.tabHandler);
+    if (elementIndex > 0) console.log('positive');
+    if (elementIndex < 0) console.log('negative');
+    console.log('current element index: ' + elementIndex);
     let nextIndex = elementIndex + (data.direction == 'forward' ? 1 : -1);
 
-    if (nextIndex > focusable.length - 1) nextIndex = 0;
+    console.log('next index supposed ', nextIndex);
 
-    focusable[nextIndex].focus();
-  });
+    if (nextIndex > focusableElements.length - 1) nextIndex = 0;
 
-  window.addEventListener('focus', function(e) {
-    console.log(this);
-    console.log('focus: ', e);
+    console.log('next index calculated ', nextIndex);
+    focusableElements[nextIndex].focus();
   });
 }

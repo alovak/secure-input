@@ -14,13 +14,18 @@ export default function element(options) {
     this.applyStyle();
   });
 
+  var isFocusing = false;
+
   this.focus = function() {
+    isFocusing = true;
+    console.log('focus');
     const container = window.parent.document.querySelector('iframe[name=' + this.id + ']').parentElement;
     const safariInput = container.querySelector('.PowerElement--safari');
 
     safariInput.focus();
     safariInput.blur();
     this.element.focus();
+    isFocusing = false;
   };
 
   this.channel.on('focus', () => {
@@ -57,12 +62,15 @@ export default function element(options) {
     }));
 
     document.body.append(tabHandler(() => {
+      console.log('forwardFocus backward');
       this.channel.say('forwardFocus', { direction: 'backward' });
     }));
 
     document.body.append(this.element);
 
     document.body.append(tabHandler((e) => {
+
+      console.log('forwardFocus forward');
       this.channel.say('forwardFocus', { direction: 'forward' });
     }));
 
@@ -72,6 +80,8 @@ export default function element(options) {
     // we add one more tabHandler element as a first focusable element
     // so it will set focus as we expect. Read above.
     window.addEventListener('focus', (e) => {
+      // if (isFocusing) return;
+
       this.focus();
     });
 
