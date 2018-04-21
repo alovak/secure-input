@@ -19,5 +19,16 @@ export default [
       format: 'iife',
       name: 'PowerPayments'
     }
+  },
+  {
+    input: 'src/test.js',
+    output: {
+      globals: {
+        window: 'window'
+      },
+      external: [ 'window' ],
+      file: 'dist/conn.js',
+      format: 'iife'
+    }
   }
 ];
