@@ -12,6 +12,7 @@ services:
     image: nginx:alpine
     volumes:
       - ./dist:/usr/share/nginx/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
   pipeline:
