@@ -1,85 +1,83 @@
-export default function channel(options) {
-  this.label = (options = (options || {})).label || 'parent';
-  this.target = options.target;
-  this.id = options.id;
+export default function Channel(options) {
+  window.addEventListener('message', this._receive.bind(this), false)
+
+  this.label = options.label;
+  this.id = options.id || (Math.random() * 1e9 | 0);
+
   this.handlers = [];
+  this.outgoingQueue = [];
+  this.incomingQueue = [];
   this.isReady = false;
-  this.queue = [];
+  this.targetReady = false;
+}
 
-  this.connect = function(options) {
-    this.target = options.target;
-    this.id = options.id;
+Channel.prototype.connect = function(options) {
+  this.target = options.target;
+};
 
-    return this;
-  }
-
-  this.send = function(type, payload) {
-    var args;
-    if (!this.isReady) {
-      var args = Array.prototype.slice.call(arguments);
-      this.queue.push(args);
-    } else {
-      this.target.postMessage({
-        type: type,
-        payload: payload,
-        channel_id: this.id
-      }, "*");
-    }
-  }
-
-  this.replayQueue = function() {
-    var self = this;
-
-    this.queue.forEach(function(args) {
-      self.send.apply(self, args);
-    })
-
-    this.queue = [];
-  }
-
-  this.receive = function(message) {
-    var event;
-
-    if (message.data.channel_id == this.id) {
-      if (message.data.type == 'event') {
-        event = message.data.payload;
-
-        this.handleEvent(event.name, event.payload);
-      }
-    }
-  }
-
-  this.say = function(eventName, payload) {
-    this.send('event', {
-      name: eventName,
-      payload: payload
-    })
-  }
-
-  this.on = function(eventName, handler) {
-    (this.handlers[eventName] || (this.handlers[eventName] = [])).push(handler);
-  }
-
-  this.handleEvent = function(eventName, payload) {
-    if (this.handlers[eventName]) {
-      this.handlers[eventName].forEach((handler) => {
-        try {
-          handler(payload)
-        } catch (e) {
-        }
-      });
-    }
-  }
-
-  this.ready = function() {
-    this.isReady = true;
-    this.say('ready');
-  }
-
-  this.on('ready', () => {
-    this.isReady = true;
-    this.replayQueue();
+Channel.prototype.ping = function() {
+  this.on('ping', function() {
+    console.log('pong', this.label);
   });
 
-  window.addEventListener("message", this.receive.bind(this), false);
-}
+  window.setInterval(function() {
+    this.say('ping');
+  }.bind(this), 1000);
+};
+
+Channel.prototype.on = function(event, handler) {
+  (this.handlers[event] || (this.handlers[event] = [])).push(handler.bind(this));
+};
+
+Channel.prototype.say = function(event, payload = {}) {
+  this._send(event, payload);
+};
+
+Channel.prototype._receive = function(e) {
+  const fn = function() {
+    this._handleEvent(e);
+  }.bind(this);
+
+  this.incomingQueue.push(fn);
+
+  if (this.isReady) {
+    while (this.incomingQueue.length > 0) {
+      (this.incomingQueue.shift())();   
+    }
+  }
+};
+
+Channel.prototype._handleEvent = function(e) {
+  const event = e.data.event;
+  const payload = e.data.payload;
+
+  if (this.handlers[event]) {
+    this.handlers[event].forEach((handler) => {
+      try {
+        handler(payload);
+      } catch (e) {
+      }
+    });
+  }
+};
+
+Channel.prototype._send = function(event, payload) {
+  const fn = function() {
+    this.target.postMessage({
+      event: event,
+      payload: payload
+    }, "*");
+  }.bind(this);
+
+  this.outgoingQueue.push(fn);
+
+  if (this.target) {
+    while (this.outgoingQueue.length > 0) {
+      (this.outgoingQueue.shift())();   
+    }
+  }
+};
+
+Channel.prototype.ready = function() {
+  this.isReady = true;
+};
