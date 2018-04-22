@@ -2,13 +2,19 @@ export default function Channel(options) {
   window.addEventListener('message', this._receive.bind(this), false)
 
   this.label = options.label;
-  this.id = options.id || (Math.random() * 1e9 | 0);
+  this.id = options.id || (Math.random() * 1e10 | 0);
 
   this.handlers = [];
   this.outgoingQueue = [];
   this.incomingQueue = [];
   this.isReady = false;
   this.targetReady = false;
+
+  this.say('handShake', { channel_id: this.id });
+
+  this.on('handShake', function(data) {
+    if (data.channel_id > this.id) this.id = data.channel_id;
+  });
 }
 
 Channel.prototype.connect = function(options) {
@@ -17,7 +23,7 @@ Channel.prototype.connect = function(options) {
 
 Channel.prototype.ping = function() {
   this.on('ping', function() {
-    console.log('pong', this.label);
+    console.log('pong', this.label, this.id);
   });
 
   window.setInterval(function() {
@@ -50,8 +56,9 @@ Channel.prototype._receive = function(e) {
 Channel.prototype._handleEvent = function(e) {
   const event = e.data.event;
   const payload = e.data.payload;
+  const channel_id = e.data.channel_id;
 
-  if (this.handlers[event]) {
+  if ((event === 'handShake' || this.id === channel_id) && this.handlers[event]) {
     this.handlers[event].forEach((handler) => {
       try {
         handler(payload);
@@ -65,7 +72,8 @@ Channel.prototype._send = function(event, payload) {
   const fn = function() {
     this.target.postMessage({
       event: event,
-      payload: payload
+      payload: payload,
+      channel_id: this.id
     }, "*");
   }.bind(this);
 

@@ -1,9 +1,7 @@
-import channel from './utils/channel';
+import Channel from './utils/channel';
 import iframe from './utils/iframe';
 
-const chan = new channel()
-
-chan.ping();
+var channel;
 
 function inIframe () {
     try {
@@ -14,7 +12,13 @@ function inIframe () {
 }
 
 if (inIframe()) {
+  channel = new Channel({ label: 'iframe' });
+  channel.ping();
+  channel.connect({ target: window.parent });
+  channel.ready();
 } else {
+  channel = new Channel({ label: 'parent' });
+  channel.ping();
   window.addEventListener('DOMContentLoaded', inParent);
 }
 
@@ -22,4 +26,6 @@ function inParent() {
   const container = document.getElementById('container');
   const iframeEl = new iframe({ src: '/conn-iframe.html', rnd: true, height: '100px' });
   container.appendChild(iframeEl);
+  channel.connect({ target: iframeEl.contentWindow });
+  channel.ready();
 }
