@@ -2,14 +2,14 @@ import pkg from './package.json';
 
 export default [
   {
-    input: 'src/main.js',
+    input: 'src/outer/main.js',
     output: [
       { file: pkg.main, format: 'iife', name: 'PowerPayments' },
       { file: pkg.module, format: 'cjs' }
     ]
   },
   {
-    input: 'src/inner/controller.js',
+    input: 'src/inner/main.js',
     output: {
       globals: {
         window: 'window'
@@ -21,13 +21,13 @@ export default [
     }
   },
   {
-    input: 'src/test.js',
+    input: 'src/test/main.js',
     output: {
       globals: {
         window: 'window'
       },
       external: [ 'window' ],
-      file: 'dist/conn.js',
+      file: 'dist/test.js',
       format: 'iife'
     }
   }
