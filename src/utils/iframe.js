@@ -1,4 +1,4 @@
-export default function iframe(options) {
+export default function IFrame(options) {
   this.options = options || {};
 
   const iframe = document.createElement('iframe');

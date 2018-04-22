@@ -1,5 +1,5 @@
-import Channel from './utils/channel';
-import iframe from './utils/iframe';
+import Channel from '../utils/channel';
+import IFrame from '../utils/iframe';
 
 var channel;
 
