@@ -9,6 +9,10 @@ export default function Element(type, options) {
 
   // for debug
   this.channel.ping();
+
+
+  this.channel.on('mounted', this._mounted.bind(this));
+    
 }
 
 Element.prototype.mount = function (elementId) {
@@ -34,12 +38,14 @@ Element.prototype._mount = function(elementId) {
 
   this.channel.say('mount', { type: this.type, options: this.options });
 
-  this.channel.on('mounted', function() {
-    const input = new Input();
-    input.value = this.channel.id;
-    this.container.appendChild(input);
-  }.bind(this));
-
   this.channel.connect({ target: this.iframe.contentWindow });
   this.channel.parentReady();
+};
+
+Element.prototype._mounted = function(data) {
+  const input = new Input();
+  input.value = this.channel.id;
+  this.container.appendChild(input);
+
+  this.container.classList.add("PowerElement");
 };
