@@ -48,6 +48,4 @@ export default function generateStyle(styles) {
       applyStyle(selectors[variant], styles[variant]);
     }
   });
-  
-  // console.log(styleSheet);
 }

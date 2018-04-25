@@ -1,5 +1,6 @@
 import Channel from '../utils/channel';
 import Input from '../utils/input';
+import generateStyle from '../utils/style';
 
 export default function Element(options) {
   this.options = options || {};
@@ -18,7 +19,9 @@ Element.prototype._mount = function(data) {
   this.options = data.options;
 
   this._createControls();
+  this._applyStyle();
   this._mountEvents();
+
   this.channel.say('mounted');
 };
 
@@ -28,6 +31,12 @@ Element.prototype._createControls = function() {
   this.input.value = this.channel.id;
 
   this.container.append(this.input);
+};
+
+Element.prototype._applyStyle = function() {
+  this.input.classList.add("PowerInput");
+
+  generateStyle(this.options.style);
 };
 
 Element.prototype._mountEvents = function() {
