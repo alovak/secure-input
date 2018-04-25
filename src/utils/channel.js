@@ -11,6 +11,7 @@ export default function Channel(options) {
   this.on('childReady', function(data) {
     this.id = data.channel_id;
     this.isTargetReady = true;
+    this._processQueue(this.outgoingQueue);
   }.bind(this));
 
   window.addEventListener('message', this._receive.bind(this), false)
@@ -27,7 +28,7 @@ Channel.prototype.ping = function() {
 
   window.setInterval(function() {
     this.say('ping');
-  }.bind(this), 1000);
+  }.bind(this), 5000);
 };
 
 Channel.prototype.on = function(event, handler) {
@@ -47,9 +48,7 @@ Channel.prototype._receive = function(e) {
   this.incomingQueue.push(fn);
 
   if (this.isReady) {
-    while (this.incomingQueue.length > 0) {
-      (this.incomingQueue.shift())();   
-    }
+    this._processQueue(this.incomingQueue);
   }
 };
 
@@ -81,9 +80,13 @@ Channel.prototype._send = function(event, payload) {
   this.outgoingQueue.push(fn);
 
   if (this.target && this.isTargetReady) {
-    while (this.outgoingQueue.length > 0) {
-      (this.outgoingQueue.shift())();   
-    }
+    this._processQueue(this.outgoingQueue);
+  }
+};
+
+Channel.prototype._processQueue = function(queue) {
+  while (queue.length > 0) {
+    (queue.shift())();   
   }
 };
 
@@ -94,7 +97,6 @@ Channel.prototype.parentReady = function() {
 Channel.prototype.childReady = function() {
   this.isReady = true;
   this.isTargetReady = true;
-  console.log('ask parent to change id to', this.id);
   this.say('childReady', { channel_id: this.id });
 }
 

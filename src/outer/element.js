@@ -8,7 +8,7 @@ export default function Element(type, options) {
   this.channel = new Channel({ label: 'outer' })
 
   // for debug
-  this.channel.ping();
+  // this.channel.ping();
 
   this.channel.on('mounted', this._mounted.bind(this));
   this.channel.on('resize', this._resize.bind(this));

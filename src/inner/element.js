@@ -6,7 +6,7 @@ export default function Element(options) {
   this.options = options || {};
   this.channel = new Channel({ label: 'inner' })
 
-  this.channel.ping();
+  // this.channel.ping();
 
   this.channel.on('mount', this._mount.bind(this));
 
@@ -47,4 +47,22 @@ Element.prototype._applyStyle = function() {
 };
 
 Element.prototype._mountEvents = function() {
+  this.input.addEventListener('blur', function() {
+    console.log('blur input');
+  });
+
+  // trick to make blur/focus work properly
+  // in iOS
+  window.addEventListener('blur', function() {
+    let input = document.createElement('input');
+    input.id = 'blur--element';
+    input.setAttribute('type', 'text');
+    this.container.prepend(input);
+    input.focus();
+    input.parentNode.removeChild(input);
+  }.bind(this));
+
+  this.input.addEventListener('focus', function() {
+    console.log('focus element');
+  });
 };
