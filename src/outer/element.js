@@ -1,6 +1,7 @@
 import IFrame from '../utils/iframe';
 import Channel from '../utils/channel';
 import Input from '../utils/input';
+import isIos from '../utils/is-ios';
 
 export default function Element(type, options) {
   this.type = type;
@@ -10,8 +11,10 @@ export default function Element(type, options) {
   // for debug
   // this.channel.ping();
 
-  this.channel.on('mounted', this._mounted.bind(this));
-  this.channel.on('resize', this._resize.bind(this));
+  this.channel.on('mounted', this._onMounted.bind(this));
+  this.channel.on('resize', this._onResize.bind(this));
+  this.channel.on('focus', this._onFocus.bind(this));
+  this.channel.on('blur', this._onBlur.bind(this));
 }
 
 Element.prototype.mount = function (elementId) {
@@ -41,7 +44,7 @@ Element.prototype._mount = function(elementId) {
   this.channel.parentReady();
 };
 
-Element.prototype._mounted = function(data) {
+Element.prototype._onMounted = function(data) {
   const input = new Input();
   input.value = this.channel.id;
   this.container.parentElement.appendChild(input);
@@ -49,7 +52,31 @@ Element.prototype._mounted = function(data) {
   this.container.classList.add("PowerElement");
 };
 
-Element.prototype._resize = function(data) {
+Element.prototype._onResize = function(data) {
   this.iframe.height = data.size.height;
+};
+
+Element.prototype._onFocus = function() {
+  this.container.classList.add("PowerElement--focus");
+
+  // console.log('focused');
+  // var val = isIos();
+  // console.log('isIos', val);
+
+  // if (!isIos()) return;
+
+  // console.log('try to do a trick');
+
+  // const input = document.createElement('input');
+  // input.id = 'focus--trick';
+  // input.setAttribute('type', 'text');
+  // this.container.prepend(input);
+  // input.focus();
+  // // input.blur();
+  // input.parentNode.removeChild(input);
+};
+
+Element.prototype._onBlur = function() {
+  this.container.classList.remove("PowerElement--focus");
 };
 

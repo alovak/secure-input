@@ -1,6 +1,7 @@
 import Channel from '../utils/channel';
 import Input from '../utils/input';
 import generateStyle from '../utils/style';
+import isIos from '../utils/is-ios';
 
 export default function Element(options) {
   this.options = options || {};
@@ -47,22 +48,27 @@ Element.prototype._applyStyle = function() {
 };
 
 Element.prototype._mountEvents = function() {
-  this.input.addEventListener('blur', function() {
-    console.log('blur input');
-  });
-
   // trick to make blur/focus work properly
   // in iOS
+  this.input.addEventListener('focus', function() {
+    console.log('input:focus, say focus');
+    this.channel.say('focus');
+  }.bind(this));
+
+  this.input.addEventListener('blur', function() {
+    console.log('input:blur, say blur');
+    this.channel.say('blur');
+  }.bind(this));
+
   window.addEventListener('blur', function() {
-    let input = document.createElement('input');
-    input.id = 'blur--element';
+    if (!isIos()) return;
+
+    const input = document.createElement('input');
     input.setAttribute('type', 'text');
     this.container.prepend(input);
     input.focus();
+    input.blur();
     input.parentNode.removeChild(input);
   }.bind(this));
 
-  this.input.addEventListener('focus', function() {
-    console.log('focus element');
-  });
 };
