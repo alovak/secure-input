@@ -37,6 +37,13 @@ Element.prototype._applyStyle = function() {
   this.input.classList.add("PowerInput");
 
   generateStyle(this.options.style);
+
+  this.channel.say('resize', {
+    size: {
+      height: this.input.getBoundingClientRect().height,
+      width: this.input.getBoundingClientRect().width,
+    }
+  });
 };
 
 Element.prototype._mountEvents = function() {
