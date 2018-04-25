@@ -1,17 +1,15 @@
-import element from './element';
-import channel from '../channel';
+import Element from './element';
 
-function controller() {
-  const id = window.name;
-  const chan = new channel();
-  const el = new element({ channel: chan, id: id });
-
-  chan.connect({ target: window.parent, id: id, label: id });
-  chan.ready();
-
-  window.addEventListener('blur', function() {
-    chan.say('blur');
-  });
+function setup() {
+  new Element();
 }
 
-controller();
+if ("complete" === document.readyState) {
+  setup();
+} else {
+  document.addEventListener('readystatechange', function(event) {
+    if (event.target.readyState === "complete" || event.target.readyState === "interactive") {
+      setup();
+    }
+  });
+}

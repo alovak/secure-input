@@ -5,13 +5,14 @@ var channel;
 
 function inIframe () {
     try {
-        return window.self !== window.top;
+      return window.self !== window.top;
     } catch (e) {
-        return true;
+      return true;
     }
 }
 
 if (inIframe()) {
+  console.log('in frame');
   channel = new Channel({ label: 'iframe' });
   channel.ping();
   channel.connect({ target: window.parent });
@@ -24,7 +25,7 @@ if (inIframe()) {
 
 function inParent() {
   const container = document.getElementById('container');
-  const iframeEl = new iframe({ src: '/conn-iframe.html', rnd: true, height: '100px' });
+  const iframeEl = new IFrame({ src: '/conn-iframe.html', rnd: true, height: '100px' });
   container.appendChild(iframeEl);
   channel.connect({ target: iframeEl.contentWindow });
   channel.ready();

@@ -1,20 +1,3 @@
-// Here is a way on how to use Channel
-//
-//   channel = new Channel({ label: 'iframe' });
-//
-// for debugg purposes you can
-//
-//   channel.ping();
-//
-// when your target is create (iframe was added to document)
-// you have to connect. Connecting means you can send messages
-// to target.
-//
-//   channel.connect({ target: window.parent });
-//
-// When you ready to enable all added handlers:
-//
-// channel.ready();
 export default function Channel(options) {
   this.label = options.label;
   this.id = options.id || (Math.random() * 1e10 | 0);
@@ -23,31 +6,14 @@ export default function Channel(options) {
   this.outgoingQueue = [];
   this.incomingQueue = [];
   this.isReady = false;
-  this.targetReady = false;
-  this.isHandShaked = false;
+  this.isTargetReady = false;
+
+  this.on('childReady', function(data) {
+    this.id = data.channel_id;
+    this.isTargetReady = true;
+  }.bind(this));
 
   window.addEventListener('message', this._receive.bind(this), false)
-
-  this.handShakeIntervalId = window.setInterval(function() {
-    console.log('say handShake', this.label, this.id);
-    this.say('handShake', { channel_id: this.id });
-  }.bind(this), 100);
-
-  this.on('handShake', function(data) {
-    console.log('receive handShake', this.label, 'id', this.id, 'channel_id', data.channel_id);
-
-    if (this.isHandShaked) return;
-
-    if (data.channel_id === this.id) {
-      this.isHandShaked = true;
-
-      clearInterval(this.handShakeIntervalId);
-
-      this.say('handShake', { channel_id: this.id });
-    } else if (data.channel_id > this.id) {
-      this.id = data.channel_id;
-    }
-  });
 }
 
 Channel.prototype.connect = function(options) {
@@ -73,6 +39,7 @@ Channel.prototype.say = function(event, payload = {}) {
 };
 
 Channel.prototype._receive = function(e) {
+
   const fn = function() {
     this._handleEvent(e);
   }.bind(this);
@@ -89,9 +56,10 @@ Channel.prototype._receive = function(e) {
 Channel.prototype._handleEvent = function(e) {
   const event = e.data.event;
   const payload = e.data.payload;
-  const channel_id = e.data.channel_id;
 
-  if ((event === 'handShake' || this.id === channel_id) && this.handlers[event]) {
+  if (e.source !== this.target) return;
+
+  if (this.handlers[event]) {
     this.handlers[event].forEach((handler) => {
       try {
         handler(payload);
@@ -110,20 +78,26 @@ Channel.prototype._send = function(event, payload) {
     }, "*");
   }.bind(this);
 
-  if (event === 'handShake' && this.target) {
-    fn();
-    return;
-  }
-
   this.outgoingQueue.push(fn);
 
-  if (this.target && this.isHandShaked) {
+  if (this.target && this.isTargetReady) {
     while (this.outgoingQueue.length > 0) {
       (this.outgoingQueue.shift())();   
     }
   }
 };
 
-Channel.prototype.ready = function() {
+Channel.prototype.parentReady = function() {
   this.isReady = true;
-};
+}
+
+Channel.prototype.childReady = function() {
+  this.isReady = true;
+  this.isTargetReady = true;
+  console.log('ask parent to change id to', this.id);
+  this.say('childReady', { channel_id: this.id });
+}
+
+// Channel.prototype.ready = function() {
+//   this.isReady = true;
+// };

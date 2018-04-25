@@ -11,8 +11,17 @@
             }
         </style>
 
+        <script>
+            function async(u, c) {
+                var d = document, t = 'script',
+                    o = d.createElement(t),
+                    s = d.getElementsByTagName(t)[0];
+                o.src = u;
+                if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+                s.parentNode.insertBefore(o, s);
+            }
 
-        <script src="/power-payments.js"></script>
+        </script>
 
         <style>
             .container {
@@ -68,11 +77,14 @@
                 cssSrc: 'https://fonts.googleapis.com/css?family=Open+Sans:400,600'
             };
 
-            var power = PowerPayments('key');
-            var elements = power.elements();
-            var card = elements.create('number', { placeholder: 'Your card number', style: style, fonts: fonts }).mount('#number');
-            var cvc = elements.create('cvc', { placeholder: 'Your cvc number', style: style, fonts: fonts }).mount('#cvc');
-            var exp = elements.create('exp', { placeholder: 'Exp', style: style, fonts: fonts }).mount('#exp');
+            async("/power-payments.js?rnd=" + (Math.random() * 1e5 | 0), function() {
+                var power = PowerPayments('key');
+                var elements = power.elements();
+                var card = elements.create('number', { placeholder: 'Your card number', style: style, fonts: fonts }).mount('#number');
+                var cvc = elements.create('cvc', { placeholder: 'Your cvc number', style: style, fonts: fonts }).mount('#cvc');
+                var exp = elements.create('exp', { placeholder: 'Exp', style: style, fonts: fonts }).mount('#exp');
+            });
+
         </script>
     </head>
     <body>

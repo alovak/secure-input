@@ -2,11 +2,12 @@
 <html>
     <head>
         <style>
-            body { padding: 0; margin: 0; }
+            body, form { padding: 0; margin: 0; }
+
 
             input {
                 background-color: transparent;
-                border: none;
+                <!-- border: none; -->
                 box-shadow: none;
                 margin: 0;
                 padding: 0;
@@ -16,9 +17,19 @@
         </style>
     </head>
     <body>
-        <form>
+        <form id="container">
             <p>iframe</p>
-            <script src="/inner.js"></script>
+            <script>
+                function async(u, c) {
+                    var d = document, t = 'script',
+                        o = d.createElement(t),
+                        s = d.getElementsByTagName(t)[0];
+                    o.src = u;
+                    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+                    s.parentNode.insertBefore(o, s);
+                }
+                async("/inner.js?rnd=" + (Math.random() * 1e5 | 0));
+            </script>
         </form>
     </body>
 
