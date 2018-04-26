@@ -11,6 +11,8 @@ export default function Element(options) {
 
   this.channel.on('mount', this._mount.bind(this));
 
+  this.channel.on('focus', this._onFocus.bind(this));
+
   this.channel.connect({ target: window.parent });
   this.channel.childReady();
 }
@@ -54,11 +56,14 @@ Element.prototype._mountEvents = function() {
   // trick to make blur/focus work properly
   // in iOS
   this.input.addEventListener('focus', function() {
+    this.isFocused = true;
     console.log('input:focus, say focus');
     this.channel.say('focus');
   }.bind(this));
 
   this.input.addEventListener('blur', function() {
+    this.isFocused = false;
+
     console.log('input:blur, say blur');
     this.channel.say('blur');
   }.bind(this));
@@ -74,4 +79,11 @@ Element.prototype._mountEvents = function() {
     input.parentNode.removeChild(input);
   }.bind(this));
 
+};
+
+
+Element.prototype._onFocus = function() {
+  if (this.isFocused) return;
+  this.isFocused = true;
+  this.input.focus();
 };

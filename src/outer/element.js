@@ -83,7 +83,8 @@ Element.prototype._mountEvents = function() {
 
   this.privateInput.addEventListener('focus', function(e) {
     console.log('privateInput focus', e);
-  }, true);
+    this.channel.say('focus');
+  }.bind(this), true);
 
   this.privateInput.addEventListener('blur', function(e) {
     console.log('privateInput blur', e);
@@ -91,11 +92,6 @@ Element.prototype._mountEvents = function() {
 };
 
 Element.prototype._onMounted = function(data) {
-  // const input = new Input();
-  // input.value = this.channel.id;
-  // this.container.parentElement.prepend(input);
-  // this.container.prepend(new Input());
-
 };
 
 Element.prototype._onResize = function(data) {
@@ -105,27 +101,17 @@ Element.prototype._onResize = function(data) {
 Element.prototype._onFocus = function() {
   this.container.classList.add("PowerElement--focus");
 
-  // console.log('focused');
-  // var val = isIos();
-  // console.log('isIos', val);
+  const isFocused = (document.activeElement === this.iframe || document.activeElement === this.privateInput);
 
-  // if (!isIos()) return;
-
-  // console.log('try to do a trick');
-
-  // const input = document.createElement('input');
-  // input.id = 'focus--trick';
-  // input.setAttribute('type', 'text');
-  // this.container.prepend(input);
-  // input.focus();
-  // // input.blur();
-  // input.parentNode.removeChild(input);
+  if (!isFocused) {
+    this.privateInput.focus();
+  }
 };
 
 Element.prototype._onBlur = function() {
-  this.container.classList.remove("PowerElement--focus");
-  // this.iframe.contentWindow.blur();
-  // this.iframe.blur();
-  // this.privateInput.focus();
-  // this.privateInput.blur();
+  const isFocused = (document.activeElement === this.iframe || document.activeElement === this.privateInput);
+
+  if (!isFocused) {
+    this.container.classList.remove("PowerElement--focus");
+  }
 };
