@@ -1,5 +1,5 @@
 import Channel from '../utils/channel';
-import { Input } from '../utils/input';
+import { Input, HiddenInput } from '../utils/input';
 import generateStyle from '../utils/style';
 import isIos from '../utils/is-ios';
 
@@ -71,8 +71,7 @@ Element.prototype._mountEvents = function() {
   window.addEventListener('blur', function() {
     if (!isIos()) return;
 
-    const input = document.createElement('input');
-    input.setAttribute('type', 'text');
+    const input = new HiddenInput();
     this.container.prepend(input);
     input.focus();
     input.blur();
