@@ -22,6 +22,7 @@ function HiddenInput(options) {
   if (options.id) el.id = options.id;
   if (options.placeholder) el.placeholder = options.placeholder;
   if (options.class) el.classList.add(options.class);
+  if (options.tabIndex) el.tabIndex = options.tabIndex;
 
   options.type ? el.type = options.type : el.type = 'text';
 

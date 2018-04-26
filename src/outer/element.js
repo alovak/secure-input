@@ -53,7 +53,7 @@ Element.prototype._createControls = function(containerId) {
 
   this.privateContainer = new Div({ class: 'PowerElement--private' });
   this.privateInput = new HiddenInput({ class: 'PowerElement--private--input' });
-  this.privateInputSafari = new HiddenInput({ class: 'PowerElement--private--input--safari' });
+  this.privateInputSafari = new HiddenInput({ class: 'PowerElement--private--input--safari', tabIndex: '-1' });
   this.iframe = new IFrame({ src: '/iframe.html', rnd: true, height: '100px' });
 
   this.container.appendChild(this.privateContainer);
