@@ -89,6 +89,7 @@ Element.prototype._mountEvents = function() {
   this.privateInput.addEventListener('blur', function(e) {
     console.log('privateInput blur', e);
   }, true);
+
 };
 
 Element.prototype._onMounted = function(data) {
@@ -109,9 +110,14 @@ Element.prototype._onFocus = function() {
 };
 
 Element.prototype._onBlur = function() {
+  this.container.classList.remove("PowerElement--focus");
+
   const isFocused = (document.activeElement === this.iframe || document.activeElement === this.privateInput);
 
   if (!isFocused) {
-    this.container.classList.remove("PowerElement--focus");
+    if (document.activeElement === document.body || !document.activeElement) {
+      this.privateInputSafari.focus();
+      this.privateInputSafari.blur();
+    }
   }
 };
