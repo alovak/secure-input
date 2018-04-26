@@ -53,19 +53,15 @@ Element.prototype._applyStyle = function() {
 };
 
 Element.prototype._mountEvents = function() {
-  // trick to make blur/focus work properly
-  // in iOS
   this.input.addEventListener('focus', function() {
-    this.isFocused = true;
-    console.log('input:focus, say focus');
-    this.channel.say('focus');
+    console.log('input focus');
+    this.focus();
   }.bind(this));
 
   this.input.addEventListener('blur', function() {
-    this.isFocused = false;
+    console.log('input blur');
 
-    console.log('input:blur, say blur');
-    this.channel.say('blur');
+    this.blur();
   }.bind(this));
 
   window.addEventListener('blur', function() {
@@ -78,11 +74,26 @@ Element.prototype._mountEvents = function() {
     input.parentNode.removeChild(input);
   }.bind(this));
 
+  document.addEventListener('focus', function(e) {
+    console.log('window focus', e);
+    this.focus();
+  }.bind(this));
 };
 
-
 Element.prototype._onFocus = function() {
+  this.focus();
+};
+
+Element.prototype.focus = function() {
   if (this.isFocused) return;
+
   this.isFocused = true;
   this.input.focus();
+  this.channel.say('focus');
+};
+
+Element.prototype.blur = function() {
+  this.isFocused = false;
+
+  this.channel.say('blur');
 };
