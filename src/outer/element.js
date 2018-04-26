@@ -1,7 +1,8 @@
 import IFrame from '../utils/iframe';
 import Channel from '../utils/channel';
-import Input from '../utils/input';
+import { Input, HiddenInput } from '../utils/input';
 import isIos from '../utils/is-ios';
+import Div from '../utils/div';
 
 export default function Element(type, options) {
   this.type = type;
@@ -29,27 +30,72 @@ Element.prototype.mount = function (elementId) {
   }
 };
 
-Element.prototype._mount = function(elementId) {
+Element.prototype._mount = function(containerId) {
   if (this.isMounted) return;
 
   this.isMounted = true;
 
-  this.container = document.querySelector(elementId);
-  this.iframe = new IFrame({ src: '/iframe.html', rnd: true, height: '100px' });
-  this.container.appendChild(this.iframe);
+  this._createControls(containerId);
+
+
+  this._mountEvents();
 
   this.channel.say('mount', { type: this.type, options: this.options });
 
   this.channel.connect({ target: this.iframe.contentWindow });
   this.channel.parentReady();
+
+};
+
+Element.prototype._createControls = function(containerId) {
+  this.container = document.querySelector(containerId);
+  this.container.classList.add("PowerElement");
+
+  this.privateContainer = new Div({ class: 'PowerElement--private' });
+  this.privateInput = new HiddenInput({ class: 'PowerElement--private--input' });
+  this.privateInputSafari = new HiddenInput({ class: 'PowerElement--private--input--safari' });
+  this.iframe = new IFrame({ src: '/iframe.html', rnd: true, height: '100px' });
+
+  this.container.appendChild(this.privateContainer);
+
+  this.privateContainer.appendChild(this.iframe);
+  this.privateContainer.appendChild(this.privateInput);
+  this.privateContainer.appendChild(this.privateInputSafari);
+  this.privateInput.value = '123';
+};
+
+Element.prototype._mountEvents = function() {
+  this.iframe.addEventListener('blur', function(e) {
+    console.log('iframe blur', e);
+  }, true);
+
+  this.iframe.addEventListener('click', function(e) {
+    console.log('iframe click', e);
+  }, true);
+
+  this.iframe.addEventListener('focus', function(e) {
+    console.log('iframe focus', e);
+  }, true);
+
+  this.container.addEventListener('focus', function(e) {
+    console.log('container focus', e);
+  }, true);
+
+  this.privateInput.addEventListener('focus', function(e) {
+    console.log('privateInput focus', e);
+  }, true);
+
+  this.privateInput.addEventListener('blur', function(e) {
+    console.log('privateInput blur', e);
+  }, true);
 };
 
 Element.prototype._onMounted = function(data) {
-  const input = new Input();
-  input.value = this.channel.id;
-  this.container.parentElement.appendChild(input);
+  // const input = new Input();
+  // input.value = this.channel.id;
+  // this.container.parentElement.prepend(input);
+  // this.container.prepend(new Input());
 
-  this.container.classList.add("PowerElement");
 };
 
 Element.prototype._onResize = function(data) {
@@ -78,5 +124,8 @@ Element.prototype._onFocus = function() {
 
 Element.prototype._onBlur = function() {
   this.container.classList.remove("PowerElement--focus");
+  // this.iframe.contentWindow.blur();
+  // this.iframe.blur();
+  // this.privateInput.focus();
+  // this.privateInput.blur();
 };
-

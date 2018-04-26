@@ -1,5 +1,5 @@
 import Channel from '../utils/channel';
-import Input from '../utils/input';
+import { Input } from '../utils/input';
 import generateStyle from '../utils/style';
 import isIos from '../utils/is-ios';
 
@@ -20,8 +20,11 @@ Element.prototype._mount = function(data) {
   this.options = data.options;
 
   this._createControls();
+  console.log('create controls');
   this._applyStyle();
+  console.log('apply style');
   this._mountEvents();
+  console.log('mount events');
 
   this.channel.say('mounted');
 };
