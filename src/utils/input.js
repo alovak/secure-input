@@ -47,4 +47,16 @@ function HiddenInput(options) {
   return el;
 }
 
-export { Input, HiddenInput }
+function TabHandler(onFocusHandler) {
+  const el = HiddenInput();
+
+  if (onFocusHandler) {
+    el.addEventListener('focus', function(event) {
+      onFocusHandler(event);
+    });
+  }
+
+  return el;
+}
+
+export { Input, HiddenInput, TabHandler }

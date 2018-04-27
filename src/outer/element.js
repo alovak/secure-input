@@ -16,6 +16,8 @@ export default function Element(type, options) {
   this.channel.on('resize', this._onResize.bind(this));
   this.channel.on('focus', this._onFocus.bind(this));
   this.channel.on('blur', this._onBlur.bind(this));
+
+  this.channel.on('forwardFocus', this._onForwardFocus.bind(this));
 }
 
 Element.prototype.mount = function (elementId) {
@@ -56,7 +58,7 @@ Element.prototype._createControls = function(containerId) {
   this.privateContainer = new Div({ class: 'PowerElement--private' });
   this.privateInput = new HiddenInput({ class: 'PowerElement--private--input' });
   this.privateInputSafari = new HiddenInput({ class: 'PowerElement--private--input--safari', tabIndex: '-1' });
-  this.iframe = new IFrame({ src: '/iframe.html', rnd: true, height: '100px' });
+  this.iframe = new IFrame({ src: '/iframe.html', rnd: true, height: '1px' });
 
   this.container.appendChild(this.privateContainer);
 
@@ -153,4 +155,28 @@ Element.prototype._onBlur = function() {
   //     this.privateInputSafari.blur();
   //   }
   // }
+};
+
+
+Element.prototype._onForwardFocus = function(data) {
+  // https://allyjs.io/data-tables/focusable.html#iframe-element
+  const focusable = Array.prototype.slice.call(document.querySelectorAll("a[href], area[href], button:not([disabled]), embed, input:not([disabled]), object, select:not([disabled]), textarea:not([disabled]), *[tabindex], *[contenteditable]"));
+
+  const focusableElements = [];
+
+  focusable.forEach(function(el) {
+    const tabIndex = el.getAttribute("tabindex");
+    if (!tabIndex || parseInt(tabIndex, 10) >= 0) {
+      focusableElements.push(el);
+    }
+  });
+
+  if (focusableElements[1] == this.privateInput) console.log('equal!!!');
+
+  const elementIndex = focusableElements.indexOf(this.privateInput);
+  let nextIndex = elementIndex + (data.direction == 'forward' ? 1 : -1);
+
+  if (nextIndex > focusableElements.length - 1) nextIndex = 0;
+
+  focusableElements[nextIndex].focus();
 };
