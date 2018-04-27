@@ -22,11 +22,8 @@ Element.prototype._mount = function(data) {
   this.options = data.options;
 
   this._createControls();
-  console.log('create controls');
   this._applyStyle();
-  console.log('apply style');
   this._mountEvents();
-  console.log('mount events');
 
   this.channel.say('mounted');
 };
@@ -55,7 +52,7 @@ Element.prototype._applyStyle = function() {
 Element.prototype._mountEvents = function() {
   this.input.addEventListener('focus', function() {
     console.log('input focus');
-    this.focus();
+    this.channel.say('focus');
   }.bind(this));
 
   this.input.addEventListener('blur', function() {
@@ -76,23 +73,34 @@ Element.prototype._mountEvents = function() {
 
   document.addEventListener('focus', function(e) {
     console.log('window focus', e);
-    this.focus();
+    this.channel.say('focus');
   }.bind(this));
 };
 
 Element.prototype._onFocus = function() {
+  console.log('innter _onFocus');
   this.focus();
 };
 
 Element.prototype.focus = function() {
-  if (this.isFocused) return;
+  console.log('called focus');
 
+  if (this.isFocused) return;
   this.isFocused = true;
+
   this.input.focus();
-  this.channel.say('focus');
+
+  console.log('say focus');
+  // this.channel.say('focus');
+  console.log('focus function end');
+
+  // this.isFocused = true;
+  // this.input.focus();
 };
 
 Element.prototype.blur = function() {
+  if (!this.isFocused) return;
+
   this.isFocused = false;
 
   this.channel.say('blur');

@@ -80,9 +80,9 @@
             async("/power-payments.js?rnd=" + (Math.random() * 1e5 | 0), function() {
                 var power = PowerPayments('key');
                 var elements = power.elements();
-                var card = elements.create('number', { placeholder: 'Your card number', style: style, fonts: fonts }).mount('#number');
-                var cvc = elements.create('cvc', { placeholder: 'Your cvc number', style: style, fonts: fonts }).mount('#cvc');
-                var exp = elements.create('exp', { placeholder: 'Exp', style: style, fonts: fonts }).mount('#exp');
+                window.card = elements.create('number', { placeholder: 'Your card number', style: style, fonts: fonts }).mount('#number');
+                window.cvc = elements.create('cvc', { placeholder: 'Your cvc number', style: style, fonts: fonts }).mount('#cvc');
+                window.exp = elements.create('exp', { placeholder: 'Exp', style: style, fonts: fonts }).mount('#exp');
             });
 
         </script>

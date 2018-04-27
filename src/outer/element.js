@@ -28,6 +28,8 @@ Element.prototype.mount = function (elementId) {
       }
     }.bind(this));
   }
+
+  return this;
 };
 
 Element.prototype._mount = function(containerId) {
@@ -83,7 +85,7 @@ Element.prototype._mountEvents = function() {
 
   this.privateInput.addEventListener('focus', function(e) {
     console.log('privateInput focus', e);
-    this.channel.say('focus');
+    this.focus();
   }.bind(this), true);
 
   this.privateInput.addEventListener('blur', function(e) {
@@ -95,29 +97,60 @@ Element.prototype._mountEvents = function() {
 Element.prototype._onMounted = function(data) {
 };
 
+Element.prototype.focus = function() {
+  if (this.isFocused) return;
+
+  this.isFocused = true;
+  this.privateInput.focus();
+  this.container.classList.add("PowerElement--focus");
+  this.channel.say('focus');
+};
+
+
 Element.prototype._onResize = function(data) {
   this.iframe.height = data.size.height;
 };
 
 Element.prototype._onFocus = function() {
-  this.container.classList.add("PowerElement--focus");
+  this.focus();
+  // this.container.classList.add("PowerElement--focus");
 
-  const isFocused = (document.activeElement === this.iframe || document.activeElement === this.privateInput);
+  // this.privateInput.focus();
+  // blur current element
+  //
+  // this.privateInput.focus();
+  // const isFocused = (document.activeElement === this.iframe || document.activeElement === this.privateInput);
 
-  if (!isFocused) {
-    this.privateInput.focus();
-  }
+  // if (!isFocused) {
+  //   this.privateInput.focus();
+  // }
+};
+
+Element.prototype.blur = function() {
+  console.log('outr blur');
+  if (!this.isFocused) return;
+
+  console.log('remove --focus, safari focus/blur');
+  this.container.classList.remove("PowerElement--focus");
+  this.isFocused = false;
+
+  if (!isIos()) return;
+
+  this.privateInputSafari.focus();
+  this.privateInputSafari.blur();
 };
 
 Element.prototype._onBlur = function() {
-  this.container.classList.remove("PowerElement--focus");
+  console.log('outer _onBlur');
+  this.blur();
+  // this.container.classList.remove("PowerElement--focus");
 
-  const isFocused = (document.activeElement === this.iframe || document.activeElement === this.privateInput);
+  // const isFocused = (document.activeElement === this.iframe || document.activeElement === this.privateInput);
 
-  if (!isFocused) {
-    if (document.activeElement === document.body || !document.activeElement) {
-      this.privateInputSafari.focus();
-      this.privateInputSafari.blur();
-    }
-  }
+  // if (!isFocused) {
+  //   if (document.activeElement === document.body || !document.activeElement) {
+  //     this.privateInputSafari.focus();
+  //     this.privateInputSafari.blur();
+  //   }
+  // }
 };
