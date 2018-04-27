@@ -34,14 +34,16 @@ Element.prototype._createControls = function() {
   this.input.value = this.channel.id;
 
   this.container.append(TabHandler(function() {
-    console.log('forwardFocus backward');
+    this.channel.say('focus');
+  }.bind(this)));
+
+  this.container.append(TabHandler(function() {
     this.channel.say('forwardFocus', { direction: 'backward' });
   }.bind(this)));
 
   this.container.append(this.input);
 
   this.container.append(TabHandler(function() {
-    console.log('forwardFocus forwardFocus');
     this.channel.say('forwardFocus', { direction: 'forward' });
   }.bind(this)));
 };

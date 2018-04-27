@@ -69,31 +69,9 @@ Element.prototype._createControls = function(containerId) {
 };
 
 Element.prototype._mountEvents = function() {
-  this.iframe.addEventListener('blur', function(e) {
-    console.log('iframe blur', e);
-  }, true);
-
-  this.iframe.addEventListener('click', function(e) {
-    console.log('iframe click', e);
-  }, true);
-
-  this.iframe.addEventListener('focus', function(e) {
-    console.log('iframe focus', e);
-  }, true);
-
-  this.container.addEventListener('focus', function(e) {
-    console.log('container focus', e);
-  }, true);
-
   this.privateInput.addEventListener('focus', function(e) {
-    console.log('privateInput focus', e);
     this.focus();
   }.bind(this), true);
-
-  this.privateInput.addEventListener('blur', function(e) {
-    console.log('privateInput blur', e);
-  }, true);
-
 };
 
 Element.prototype._onMounted = function(data) {
@@ -115,24 +93,11 @@ Element.prototype._onResize = function(data) {
 
 Element.prototype._onFocus = function() {
   this.focus();
-  // this.container.classList.add("PowerElement--focus");
-
-  // this.privateInput.focus();
-  // blur current element
-  //
-  // this.privateInput.focus();
-  // const isFocused = (document.activeElement === this.iframe || document.activeElement === this.privateInput);
-
-  // if (!isFocused) {
-  //   this.privateInput.focus();
-  // }
 };
 
 Element.prototype.blur = function() {
-  console.log('outr blur');
   if (!this.isFocused) return;
 
-  console.log('remove --focus, safari focus/blur');
   this.container.classList.remove("PowerElement--focus");
   this.isFocused = false;
 
@@ -143,18 +108,7 @@ Element.prototype.blur = function() {
 };
 
 Element.prototype._onBlur = function() {
-  console.log('outer _onBlur');
   this.blur();
-  // this.container.classList.remove("PowerElement--focus");
-
-  // const isFocused = (document.activeElement === this.iframe || document.activeElement === this.privateInput);
-
-  // if (!isFocused) {
-  //   if (document.activeElement === document.body || !document.activeElement) {
-  //     this.privateInputSafari.focus();
-  //     this.privateInputSafari.blur();
-  //   }
-  // }
 };
 
 
@@ -170,8 +124,6 @@ Element.prototype._onForwardFocus = function(data) {
       focusableElements.push(el);
     }
   });
-
-  if (focusableElements[1] == this.privateInput) console.log('equal!!!');
 
   const elementIndex = focusableElements.indexOf(this.privateInput);
   let nextIndex = elementIndex + (data.direction == 'forward' ? 1 : -1);
