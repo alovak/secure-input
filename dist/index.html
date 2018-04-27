@@ -83,6 +83,16 @@
                 window.card = elements.create('number', { placeholder: 'Your card number', style: style, fonts: fonts }).mount('#number');
                 window.cvc = elements.create('cvc', { placeholder: 'Your cvc number', style: style, fonts: fonts }).mount('#cvc');
                 window.exp = elements.create('exp', { placeholder: 'Exp', style: style, fonts: fonts }).mount('#exp');
+                var btn1 = document.getElementById('btn1');
+                var btn2 = document.getElementById('btn2');
+
+                btn1.addEventListener('click', function() {
+                    window.card.focus();
+                });
+
+                btn2.addEventListener('click', function() {
+                    window.cvc.focus();
+                });
             });
 
         </script>
@@ -92,6 +102,8 @@
             <div class="py-5 text-center">
                 <h2>Checkout form</h2>
                 <p class="lead">Below is an example form built entirely with Bootstrap's form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
+                <p><input type="button" id="btn1" value="focus card" /></p>
+                <p><input type="button" id="btn2" value="focus cvc" /></p>
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">

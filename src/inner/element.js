@@ -99,9 +99,11 @@ Element.prototype.focus = function() {
 };
 
 Element.prototype.blur = function() {
+  console.log('called blur');
   if (!this.isFocused) return;
 
   this.isFocused = false;
 
+  console.log('say blur');
   this.channel.say('blur');
 };
