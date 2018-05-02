@@ -17,6 +17,13 @@ export default [
     }
   },
   {
+    input: 'src/controller/inner.js',
+    output: {
+      file: 'dist/controller.js',
+      format: 'iife'
+    }
+  },
+  {
     input: 'src/test/main.js',
     output: {
       globals: {

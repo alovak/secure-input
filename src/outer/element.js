@@ -4,10 +4,11 @@ import { Input, HiddenInput } from '../utils/input';
 import isIos from '../utils/is-ios';
 import Div from '../utils/div';
 
-export default function Element(type, options) {
+export default function Element(type, options, elements) {
   this.type = type;
   this.options = options || {};
   this.channel = new Channel({ label: 'outer' })
+  this.elements = elements;
 
   // for debug
   // this.channel.ping();
@@ -48,7 +49,6 @@ Element.prototype._mount = function(containerId) {
 
   this.channel.connect({ target: this.iframe.contentWindow });
   this.channel.parentReady();
-
 };
 
 Element.prototype._createControls = function(containerId) {
