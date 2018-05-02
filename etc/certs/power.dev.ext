@@ -1,0 +1,13 @@
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = js.power.dev
+DNS.2 = app.power.dev
+DNS.3 = dashboard.power.dev
+DNS.4 = api.power.dev
+DNS.5 = web.power.dev
+DNS.6 = localhost
+DNS.7 = 127.0.0.1

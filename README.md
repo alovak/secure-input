@@ -1,6 +1,13 @@
 # JS-SDK
 
 
+## HTTPS on js.power.dev
+
+Password for myCA.pem is **1234**
+
+This is a how to for self signed certificates: https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/
+
+
 ## How to test pipeline locally
 
 Don't forget that you need .env file with IAM user that can assume DeployerRole:
