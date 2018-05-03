@@ -79,10 +79,13 @@ Element.prototype._onMounted = function(data) {
 };
 
 Element.prototype.focus = function() {
+  console.log('called outer focus');
+  console.log('is focused', this.isFocused);
   if (this.isFocused) return;
 
   this.isFocused = true;
   this.privateInput.focus();
+  if (!isIos()) this.privateInput.blur();
   this.container.classList.add("PowerElement--focus");
   this.channel.say('focus');
 };
@@ -102,8 +105,12 @@ Element.prototype.blur = function() {
   this.container.classList.remove("PowerElement--focus");
   this.isFocused = false;
 
+  this.iframe.blur();
+  this.iframe.contentWindow.blur();
+
   if (!isIos()) return;
 
+  
   this.privateInputSafari.focus();
   this.privateInputSafari.blur();
 };
@@ -114,6 +121,7 @@ Element.prototype._onBlur = function() {
 
 
 Element.prototype._onForwardFocus = function(data) {
+  console.log('_onForwardFocus', data);
   // https://allyjs.io/data-tables/focusable.html#iframe-element
   const focusable = Array.prototype.slice.call(document.querySelectorAll("a[href], area[href], button:not([disabled]), embed, input:not([disabled]), object, select:not([disabled]), textarea:not([disabled]), *[tabindex], *[contenteditable]"));
 
@@ -130,6 +138,9 @@ Element.prototype._onForwardFocus = function(data) {
   let nextIndex = elementIndex + (data.direction == 'forward' ? 1 : -1);
 
   if (nextIndex > focusableElements.length - 1) nextIndex = 0;
+
+  console.log('set focus on index', nextIndex);
+  console.log('set focus on element', focusableElements[nextIndex]);
 
   focusableElements[nextIndex].focus();
 };
