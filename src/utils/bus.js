@@ -14,8 +14,7 @@ Bus.prototype.emit = function(event, payload, targets, callback) {
   const promises = [];
 
   targets.forEach(function(target) {
-
-    let promise = new Promise(function(resolve, reject) {
+    const promise = new Promise(function(resolve, reject) {
       target.postMessage({
         busEvent: event,
         payload: payload,
@@ -54,7 +53,6 @@ Bus.prototype._receive = function(e) {
 
   if (callbackId) {
     callback = function(data) {
-      console.log('inside callback postMessage');
       source.postMessage({
         busEvent: 'callback',
         payload: data,
@@ -62,8 +60,6 @@ Bus.prototype._receive = function(e) {
       }, '*');
     };
   }
-
-  console.log('process handlers');
 
   if (this.handlers[event]) {
     this.handlers[event].forEach((handler) => {
@@ -74,4 +70,3 @@ Bus.prototype._receive = function(e) {
     });
   }
 };
-
