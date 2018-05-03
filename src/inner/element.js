@@ -2,10 +2,12 @@ import Channel from '../utils/channel';
 import { Input, HiddenInput, TabHandler } from '../utils/input';
 import generateStyle from '../utils/style';
 import isIos from '../utils/is-ios';
+import Bus from '../utils/bus';
 
 export default function Element(options) {
   this.options = options || {};
   this.channel = new Channel({ label: 'inner' })
+  this.bus = new Bus();
 
   // this.channel.ping();
 
@@ -15,6 +17,15 @@ export default function Element(options) {
 
   this.channel.connect({ target: window.parent });
   this.channel.childReady();
+
+
+  this.bus.on('collect', function(data, callback) {
+    if (!callback) return;
+
+    data[this.type] = this.input.value;
+
+    callback(data);
+  }.bind(this));
 }
 
 Element.prototype._mount = function(data) {
