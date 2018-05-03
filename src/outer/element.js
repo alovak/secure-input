@@ -9,6 +9,7 @@ export default function Element(type, options, elements) {
   this.options = options || {};
   this.channel = new Channel({ label: 'outer' })
   this.elements = elements;
+  this.id = 'PowerElement_' + (Math.random() * 1e6 | 0);
 
   // for debug
   // this.channel.ping();
@@ -58,7 +59,7 @@ Element.prototype._createControls = function(containerId) {
   this.privateContainer = new Div({ class: 'PowerElement--private' });
   this.privateInput = new HiddenInput({ class: 'PowerElement--private--input' });
   this.privateInputSafari = new HiddenInput({ class: 'PowerElement--private--input--safari', tabIndex: '-1' });
-  this.iframe = new IFrame({ src: '/iframe.html', rnd: true, height: '1px' });
+  this.iframe = new IFrame({ src: '/iframe.html', rnd: true, height: '1px', id: this.id });
 
   this.container.appendChild(this.privateContainer);
 
