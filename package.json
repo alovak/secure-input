@@ -4,7 +4,8 @@
   "main": "dist/power-payments.js",
   "module": "dist/power-payments.cjs.js",
   "devDependencies": {
-    "rollup": "^0.57.1"
+    "rollup": "^0.57.1",
+    "rollup-plugin-replace": "^2.0.0"
   },
   "scripts": {
     "build": "rollup -c",
