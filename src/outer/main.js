@@ -1,4 +1,5 @@
-import Elements from './elements.js';
+import Elements from './elements';
+import Config from '../config';
 
 export default function PowerPayments() {
   return {

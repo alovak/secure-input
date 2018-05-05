@@ -1,10 +1,12 @@
+import Config from '../config';
+
 export default function IFrame(options) {
   this.options = options || {};
 
   const iframe = document.createElement('iframe');
   if (options.name) iframe.name = options.name;
   if (options.id) iframe.id = options.id;
-  iframe.src = 'https://js.power.dev' + ((options.rnd && (options.src + "?rnd=" + (Math.random() * 1e5 | 0) )) || options.src);
+  iframe.src = Config.baseUrl + ((options.rnd && (options.src + "?rnd=" + (Math.random() * 1e5 | 0) )) || options.src);
 
   iframe.height = options.height || '1px';
   iframe.frameborder = '0';
