@@ -11,7 +11,7 @@ pipelines:
         image: node:8.11-alpine
         script: 
           - npm install
-          - npm run build
+          - npm run staging
         artifacts:
           - dist/**
     - step:
