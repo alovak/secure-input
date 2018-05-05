@@ -1,3 +1,5 @@
+import Config from '../config';
+
 export default function Bus() {
   this.handlers = [];
   this.callbacks = {};
@@ -19,7 +21,7 @@ Bus.prototype.emit = function(event, payload, targets, callback) {
         busEvent: event,
         payload: payload,
         callbackId: this._addCallback(callback || resolve)
-      }, "*");
+      }, Config.baseUrl);
     }.bind(this));
 
     promises.push(promise);
@@ -41,7 +43,7 @@ Bus.prototype._receive = function(e) {
   const callbackId = e.data.callbackId;
   const source = e.source;
 
-  if (!event) return;
+  if (e.origin !== Config.baseUrl || !event) return;
 
   if (event === 'callback') {
     this.callbacks[callbackId](payload);
