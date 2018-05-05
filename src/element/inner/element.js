@@ -1,8 +1,8 @@
-import Channel from '../utils/channel';
-import { Input, HiddenInput, TabHandler } from '../utils/input';
-import generateStyle from '../utils/style';
-import isIos from '../utils/is-ios';
-import Bus from '../utils/bus';
+import Channel from '../../utils/channel';
+import { Input, HiddenInput, TabHandler } from '../../utils/input';
+import generateStyle from '../../utils/style';
+import isIos from '../../utils/is-ios';
+import Bus from '../../utils/bus';
 
 export default function Element(options) {
   this.options = options || {};

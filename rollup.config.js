@@ -7,15 +7,13 @@ function replaceEnvFile(importee, importer) {
     let newImportee = importee.replace('ENVIRONMENT', process.env.ENV);
     let newPath = path.resolve( path.dirname( importer ), `${newImportee}.js` );
 
-    console.log(newPath);
-
     return newPath;
   }
 }
 
 export default [
   {
-    input: 'src/outer/main.js',
+    input: 'src/main.js',
     plugins: [ { resolveId: replaceEnvFile } ],
     output: [
       { file: pkg.main, format: 'iife', name: 'PowerPayments' },
@@ -23,7 +21,7 @@ export default [
     ]
   },
   {
-    input: 'src/inner/main.js',
+    input: 'src/element/inner/main.js',
     plugins: [ { resolveId: replaceEnvFile } ],
     output: {
       external: [ 'window' ],

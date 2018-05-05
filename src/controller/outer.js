@@ -49,4 +49,3 @@ Controller.prototype.createToken = function(elementsIds) {
 
   console.log('3');
 };
-

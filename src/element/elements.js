@@ -1,4 +1,4 @@
-import Element from './element.js';
+import Element from './outer/element.js';
 import Controller from '../controller/outer.js';
 
 export default function Elements() {

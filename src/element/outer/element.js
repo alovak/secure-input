@@ -1,8 +1,8 @@
-import IFrame from '../utils/iframe';
-import Channel from '../utils/channel';
-import { Input, HiddenInput } from '../utils/input';
-import isIos from '../utils/is-ios';
-import Div from '../utils/div';
+import IFrame from '../../utils/iframe';
+import Channel from '../../utils/channel';
+import { Input, HiddenInput } from '../../utils/input';
+import isIos from '../../utils/is-ios';
+import Div from '../../utils/div';
 
 export default function Element(type, options, elements) {
   this.type = type;
