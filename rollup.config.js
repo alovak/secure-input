@@ -1,6 +1,8 @@
 import pkg from './package.json';
 import replace from 'rollup-plugin-replace';
 import path from 'path';
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
 
 function replaceEnvFile(importee, importer) {
   if (importee.match(/ENVIRONMENT/)) {
@@ -22,7 +24,14 @@ export default [
   },
   {
     input: 'src/element/inner/main.js',
-    plugins: [ { resolveId: replaceEnvFile } ],
+    plugins: [
+      resolve({
+        browser: true
+      }),
+      commonjs({
+        include: 'node_modules/**'
+      }),
+      { resolveId: replaceEnvFile } ],
     output: {
       external: [ 'window' ],
       file: 'dist/inner.js',
