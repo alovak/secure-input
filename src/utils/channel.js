@@ -7,6 +7,8 @@ export default function Channel(options) {
   this.incomingQueue = [];
   this.isReady = false;
   this.isTargetReady = false;
+  this.callbacks = {};
+  this.callbackId = 1;
 
   this.on('childReady', function(data) {
     this.id = data.channel_id;
@@ -35,8 +37,8 @@ Channel.prototype.on = function(event, handler) {
   (this.handlers[event] || (this.handlers[event] = [])).push(handler.bind(this));
 };
 
-Channel.prototype.say = function(event, payload = {}) {
-  this._send(event, payload);
+Channel.prototype.say = function(event, payload = {}, callback) {
+  this._send(event, payload, callback);
 };
 
 Channel.prototype._receive = function(e) {
@@ -55,24 +57,51 @@ Channel.prototype._receive = function(e) {
 Channel.prototype._handleEvent = function(e) {
   const event = e.data.event;
   const payload = e.data.payload;
+  const callbackId = e.data.callbackId;
+  const source = e.source;
 
-  if (e.source !== this.target) return;
+  if (e.source !== this.target || !event) return;
+
+  if (event === 'callback') {
+    this.callbacks[callbackId](payload);
+    delete this.callbacks[callbackId];
+    return;
+  }
+
+  let callback;
+
+  if (callbackId) {
+    callback = function(data) {
+      source.postMessage({
+        event: 'callback',
+        payload: data,
+        callbackId: callbackId
+      }, '*');
+    };
+  }
 
   if (this.handlers[event]) {
     this.handlers[event].forEach((handler) => {
       try {
-        handler(payload);
+        handler(payload, callback);
       } catch (e) {
       }
     });
   }
 };
 
-Channel.prototype._send = function(event, payload) {
+Channel.prototype._addCallback = function(callback) {
+  const callbackId = this.callbackId++;
+  this.callbacks[callbackId] = callback;
+  return callbackId;
+};
+
+Channel.prototype._send = function(event, payload, callback) {
   const fn = function() {
     this.target.postMessage({
       event: event,
       payload: payload,
+      callbackId: callback ? this._addCallback(callback) : null,
       channel_id: this.id
     }, "*");
   }.bind(this);
