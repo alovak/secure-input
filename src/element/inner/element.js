@@ -1,5 +1,8 @@
 import Channel from '../../utils/channel';
 import { Input, HiddenInput, TabHandler } from '../../utils/input';
+import NumberInput from '../../utils/inputs/number';
+import CvcInput from '../../utils/inputs/cvc';
+import ExpInput from '../../utils/inputs/exp';
 import generateStyle from '../../utils/style';
 import isIos from '../../utils/is-ios';
 import Bus from '../../utils/bus';
@@ -40,9 +43,14 @@ Element.prototype._mount = function(data) {
 };
 
 Element.prototype._createControls = function() {
+  const inputs = {
+    number: NumberInput,
+    cvc: CvcInput,
+    exp: ExpInput
+  };
+
   this.container = document.querySelector('#container');
-  this.input = new Input();
-  this.input.value = this.channel.id;
+  this.input = new inputs[this.type]();
 
   this.container.append(TabHandler(function() {
     this.channel.say('focus');
