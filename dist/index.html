@@ -99,8 +99,10 @@
                 });
 
                 btn3.addEventListener('click', function() {
-                    elements.createToken(card).then(function(result) {
-                        console.log(result);
+					var resultEl = document.getElementById('result');
+
+                    elements.createToken().then(function(result) {
+						resultEl.innerHTML = JSON.stringify(result);
                     });
                 });
             });

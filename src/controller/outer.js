@@ -36,16 +36,16 @@ Controller.prototype._createControls = function(containerId) {
   document.body.appendChild(this.iframe);
 };
 
-Controller.prototype.createToken = function(elementsIds) {
+Controller.prototype.createToken = function(elementsIds, callback) {
   const frames = Array.prototype.slice.call(window.frames);
-  console.log('1');
+
   const framesIds = elementsIds.map(function(frameId) {
     return frames.indexOf(document.getElementById(frameId).contentWindow);
   });
 
-  console.log('2');
-
-  this.channel.say('tokenize', framesIds);
-
-  console.log('3');
+  console.log('say tokenize');
+  this.channel.say('tokenize', framesIds, function(data) {
+    console.log('tokenize callback called with', data);
+    callback(data);
+  });
 };

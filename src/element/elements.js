@@ -15,8 +15,8 @@ Elements.prototype.create = function(type, options) {
   return el;
 };
 
-Elements.prototype.createToken = function() {
-  return new Promise(function() {
-    this.controller.createToken(this.ids);
+Elements.prototype.createToken = function(callback) {
+  return new Promise(function(resolve, reject) {
+    this.controller.createToken(this.ids, callback || resolve);
   }.bind(this));
 };

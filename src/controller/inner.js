@@ -12,14 +12,15 @@ function Controller(options) {
 
 }
 
-Controller.prototype._tokenize = function(framesIds) {
+Controller.prototype._tokenize = function(framesIds, callback) {
   const frames = framesIds.map(function(index) { return window.parent.frames[index] });
 
   this.bus.emit('collect', {}, frames).then(function(data) {
     let card = {};
     data.forEach(function(d) { Object.assign(card, d) });
 
-    console.log('got data back in then', card)
+
+    if (callback) callback(card);
   });
 };
 
