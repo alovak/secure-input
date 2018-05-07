@@ -1,5 +1,6 @@
 import Channel from '../utils/channel';
 import Bus from '../utils/bus';
+import Config from '../config';
 
 function Controller(options) {
   this.channel = new Channel({ label: 'inner_controller' })
@@ -19,30 +20,24 @@ Controller.prototype._tokenize = function(framesIds, callback) {
     let card = {};
     data.forEach(function(d) { Object.assign(card, d) });
 
-    if (callback) this._createToken(card, callback);
+    if (callback) this._createToken(card).then(function(token) {
+      callback(token)
+    });
   }.bind(this));
 };
 
-Controller.prototype._createToken = function(card, callback) {
-  // send request to API
-  // and then return token to callback
-  const token = {
-    id: 'tok_' + (Math.random() * 1e10 | 0),
-    object: 'token',
-    used: false,
-    type: 'card',
-    card: {
-      id: 'card_' + (Math.random() * 1e10 | 0),
-      brand: 'visa',
-      last4: '4242',
-      exp_month: 1,
-      exp_year: 2020,
-      country: 'US',
-      holder: null
+Controller.prototype._createToken = function(card) {
+  return fetch(Config.apiUrl + '/tokens', {
+    method: 'POST',
+    body: JSON.stringify({ card: card }),
+    headers: {
+      'Content-type': 'application/json'
     }
-  }
-
-  callback(token);
+  }).then(function(response) {
+    return new Promise(function(resolve, reject) {
+      if (response.ok) resolve(response.json());
+    });
+  });
 };
 
 new Controller();
