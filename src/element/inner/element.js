@@ -50,7 +50,8 @@ Element.prototype._createControls = function() {
   };
 
   this.container = document.querySelector('#container');
-  this.input = new inputs[this.type]();
+
+  this.input = new inputs[this.type]({ channel: this.channel });
 
   this.container.append(TabHandler(function() {
     this.channel.say('focus');

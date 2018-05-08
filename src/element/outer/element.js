@@ -11,6 +11,8 @@ export default function Element(type, options, elements) {
   this.elements = elements;
   this.id = 'PowerElement_' + (Math.random() * 1e6 | 0);
 
+  this.userCallbacks = {};
+
   // for debug
   // this.channel.ping();
 
@@ -20,6 +22,8 @@ export default function Element(type, options, elements) {
   this.channel.on('blur', this._onBlur.bind(this));
 
   this.channel.on('forwardFocus', this._onForwardFocus.bind(this));
+
+  this.channel.on('change', this._onChange.bind(this));
 }
 
 Element.prototype.mount = function (elementId) {
@@ -143,4 +147,22 @@ Element.prototype._onForwardFocus = function(data) {
   console.log('set focus on element', focusableElements[nextIndex]);
 
   focusableElements[nextIndex].focus();
+};
+
+Element.prototype.addEventListener = function(event, callback) {
+  (this.userCallbacks[event] || (this.userCallbacks[event] = [])).push(callback);
+};
+
+
+Element.prototype._onChange = function(data) {
+  console.log('element changed', data);
+
+  if (!this.userCallbacks.change) return;
+
+  this.userCallbacks.change.forEach((callback) => {
+    try {
+      callback(data);
+    } catch (e) {
+    }
+  });
 };
