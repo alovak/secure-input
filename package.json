@@ -20,6 +20,7 @@
     "dist"
   ],
   "dependencies": {
+    "card-validator": "^4.3.0",
     "restricted-input": "^1.2.7"
   }
 }
