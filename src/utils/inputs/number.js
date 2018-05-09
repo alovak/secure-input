@@ -77,12 +77,21 @@ export default function NumberInput(options) {
 
     formatter.setPattern(generatePattern(validationResult.card));
 
+
+    el.classList.remove("invalid");
+    el.classList.remove("complete");
+
     if (validationResult.isPotentiallyValid !== true) {
       options.channel.say('change', { 
         type: 'number',
         isInvalid: true
       });
+
+      el.classList.add("invalid");
     } else {
+
+      if (validationResult.isValid === true) el.classList.add("complete");
+
       options.channel.say('change', { 
         type: 'number',
         complete: validationResult.isValid,

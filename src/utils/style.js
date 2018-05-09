@@ -22,7 +22,8 @@ export default function generateStyle(styles) {
 
   const selectors = {
     base: '.PowerInput',
-    invalid: '.PowerInput--invalid'
+    invalid: '.PowerInput.invalid',
+    complete: '.PowerInput.complete'
   }
 
   const styleEl = document.createElement("style");

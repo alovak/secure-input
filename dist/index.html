@@ -2,6 +2,7 @@
     <head>
         <title>PowerPayments JS SDK Demo</title>
 		<link rel="stylesheet" href="/bootstrap.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
@@ -26,6 +27,22 @@
         <style>
             .container {
                 max-width: 960px;
+            }
+
+            .element-icon {
+                position: absolute;
+                top: 11px;
+                right: 30px;
+            }
+
+            .valid {
+                color: #42cb42;
+                transition: all 0.50s ease-in-out;
+            }
+
+            .invalid {
+                color: #e05454;
+                transition: all 0.50s ease-in-out;
             }
 
             .border-top { border-top: 1px solid #e5e5e5; }
@@ -68,11 +85,17 @@
                         color: 'green'
                     }
 				},
+                complete: {
+                    color: 'yellow',
+                    ':focus': {
+                        color: 'yellow',
+                    }
+                },
 				invalid: {
 					color: '#e5424d',
-					':focus': {
-						color: '#303238',
-					},
+                    ':focus': {
+                        color: '#e5424d'
+                    },
 				},
 			};
 
@@ -110,11 +133,22 @@
                 card.addEventListener('change', function(event) {
                     console.log('change event', event);
                     var feedbackEl = document.getElementById('number').nextElementSibling;
+                    var iconEl = feedbackEl.nextElementSibling;
+
+                    iconEl.classList.remove("invalid");
+                    iconEl.classList.remove("valid");
 
                     if (event.isInvalid) {
                         feedbackEl.style.display = 'block';
+                        iconEl.classList.add("invalid");
                     } else {
                         feedbackEl.style.display = 'none';
+                        iconEl.classList.remove("invalid");
+                        iconEl.classList.remove("valid");
+
+                        if (event.complete === true) {
+                            iconEl.classList.add("valid");
+                        }
                     }
                 });
             });
@@ -147,6 +181,7 @@
                     <div class="invalid-feedback">
                         Card number is not valid
                     </div>
+                    <i class="fab fa-cc-visa element-icon"></i>
                 </div>
             </div>
             <div class="row">
