@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>PowerPayments JS SDK Demo</title>
-		<link rel="stylesheet" href="/bootstrap.min.css">
+        <link rel="stylesheet" href="/bootstrap.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
@@ -66,119 +66,90 @@
             }
         </style>
         <script>
-			var style = {
-				base: {
-					fontSize: '1em',
+            var style = {
+                base: {
+                    fontSize: '1em',
+                    color: '#514d4d',
                     fontFamily: "'Open Sans', sans-serif",
                     fontWeight: '400',
                     lineHeight: '1.5',
-					color: "#495057",
-					fontSmoothing: 'antialiased',
-					'::placeholder': {
-						color: '#00ff00',
-                        fontSize: '1rem',
-					},
+                    fontSmoothing: 'antialiased',
                     ':focus': {
                         fontWeight: '600'
                     },
-                    ':hover': {
-                        color: 'green'
-                    }
-				},
-                complete: {
-                    color: 'yellow',
-                    ':focus': {
-                        color: 'yellow',
-                    }
                 },
-				invalid: {
-					color: '#e5424d',
-                    ':focus': {
-                        color: '#e5424d'
-                    },
-				},
-			};
-
-
-            var fonts = {
-                cssSrc: 'https://fonts.googleapis.com/css?family=Open+Sans:400,600'
+                complete: {
+                    color: '#39a42e',
+                },
+                invalid: {
+                    color: '#e5424d',
+                }
             };
 
-            async("/power-payments.js?rnd=" + (Math.random() * 1e5 | 0), function() {
-                var power = PowerPayments('key');
-                var elements = power.elements();
-                var card = elements.create('number', { placeholder: 'Card number', style: style, fonts: fonts }).mount('#number');
-                var cvc = elements.create('cvc', { placeholder: 'CVC', style: style, fonts: fonts }).mount('#cvc');
-                var exp = elements.create('exp', { placeholder: 'MM / YY', style: style, fonts: fonts }).mount('#exp');
+async("/power-payments.js?rnd=" + (Math.random() * 1e5 | 0), function() {
+    var power = PowerPayments('key');
+    var elements = power.elements();
+    var card = elements.create('number', { placeholder: 'Card number', style: style }).mount('#number');
+    var cvc = elements.create('cvc', { placeholder: 'CVC', style: style }).mount('#cvc');
+    var exp = elements.create('exp', { placeholder: 'MM / YY', style: style }).mount('#exp');
 
-                var btn1 = document.getElementById('btn1');
-                var btn2 = document.getElementById('btn2');
+    var btn1 = document.getElementById('btn1');
+    var btn2 = document.getElementById('btn2');
 
-                btn1.addEventListener('click', function() {
-                    card.focus();
-                });
+    btn1.addEventListener('click', function() {
+        card.focus();
+    });
 
-                btn2.addEventListener('click', function() {
-                    cvc.focus();
-                });
+    btn2.addEventListener('click', function() {
+        cvc.focus();
+    });
 
-                btn3.addEventListener('click', function() {
-					var resultEl = document.getElementById('result');
+    btn3.addEventListener('click', function() {
+        var resultEl = document.getElementById('result');
 
-                    elements.createToken().then(function(result) {
-						resultEl.innerHTML = JSON.stringify(result);
-                    });
-                });
+        elements.createToken().then(function(result) {
+            resultEl.innerHTML = JSON.stringify(result);
+        });
+    });
 
-                card.addEventListener('change', function(event) {
-                    console.log('change event', event);
-                    var feedbackEl = document.getElementById('number').nextElementSibling;
-                    var iconEl = feedbackEl.nextElementSibling;
+    card.addEventListener('change', function(event) {
+        console.log('change event', event);
+        var feedbackEl = document.getElementById('number').nextElementSibling;
+        var iconEl = feedbackEl.nextElementSibling;
 
-                    iconEl.classList.remove("invalid");
-                    iconEl.classList.remove("valid");
+        iconEl.classList.remove("invalid");
+        iconEl.classList.remove("valid");
 
-                    if (event.isInvalid) {
-                        feedbackEl.style.display = 'block';
-                        iconEl.classList.add("invalid");
-                    } else {
-                        feedbackEl.style.display = 'none';
-                        iconEl.classList.remove("invalid");
-                        iconEl.classList.remove("valid");
+        if (event.isInvalid) {
+            feedbackEl.style.display = 'block';
+            iconEl.classList.add("invalid");
+        } else {
+            feedbackEl.style.display = 'none';
+            iconEl.classList.remove("invalid");
+            iconEl.classList.remove("valid");
 
-                        if (event.complete === true) {
-                            iconEl.classList.add("valid");
-                        }
-                    }
-                });
-            });
+            if (event.complete === true) {
+                iconEl.classList.add("valid");
+            }
+        }
+    });
+});
 
         </script>
-
-        <style>
-            span.icon {
-                font-size: 12px;
-            }
-            span.icon svg {
-                display: inline-block;
-                height: 1.5em;
-            }
-        </style>
     </head>
     <body>
-        <div>
-            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M470.1 231.3s7.6 37.2 9.3 45H446c3.3-8.9 16-43.5 16-43.5-.2.3 3.3-9.1 5.3-14.9l2.8 13.4zM576 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h480c26.5 0 48 21.5 48 48zM152.5 331.2L215.7 176h-42.5l-39.3 106-4.3-21.5-14-71.4c-2.3-9.9-9.4-12.7-18.2-13.1H32.7l-.7 3.1c15.8 4 29.9 9.8 42.2 17.1l35.8 135h42.5zm94.4.2L272.1 176h-40.2l-25.1 155.4h40.1zm139.9-50.8c.2-17.7-10.6-31.2-33.7-42.3-14.1-7.1-22.7-11.9-22.7-19.2.2-6.6 7.3-13.4 23.1-13.4 13.1-.3 22.7 2.8 29.9 5.9l3.6 1.7 5.5-33.6c-7.9-3.1-20.5-6.6-36-6.6-39.7 0-67.6 21.2-67.8 51.4-.3 22.3 20 34.7 35.2 42.2 15.5 7.6 20.8 12.6 20.8 19.3-.2 10.4-12.6 15.2-24.1 15.2-16 0-24.6-2.5-37.7-8.3l-5.3-2.5-5.6 34.9c9.4 4.3 26.8 8.1 44.8 8.3 42.2.1 69.7-20.8 70-53zM528 331.4L495.6 176h-31.1c-9.6 0-16.9 2.8-21 12.9l-59.7 142.5H426s6.9-19.2 8.4-23.3H486c1.2 5.5 4.8 23.3 4.8 23.3H528z"/></svg></span>
-        </div>
-		<div class="container">
-            <div class="py-5 text-center">
-                <h2>Checkout form</h2>
-                <p class="lead">Below is an example form built entirely with Bootstrap's form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
-                <p><input type="button" id="btn1" value="focus card" /></p>
-                <p><input type="button" id="btn2" value="focus cvc" /></p>
-                <p><input type="button" id="btn3" value="tokenize!" /></p>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h2>PowerPayments JS SDK</h2>
+                    <p><input type="button" id="btn1" value="focus card" />
+                        <input type="button" id="btn2" value="focus cvc" />
+                        <input type="button" id="btn3" value="tokenize!" /></p>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    <h3>Credit Card form</h3>
                     <label>Name on card</label>
                     <input class="form-control" id="cc-name" placeholder="" required="" type="text">
                     <small class="text-muted">Full name as displayed on card</small>
@@ -223,9 +194,13 @@
                     </div>
                 </div>
             </div>
-		</div>
-        <div id="result" class="alert alert-success" role="alert">
-            This is a success alert—check it out!
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div id="result" class="alert alert-success" role="alert">
+                        Card token...
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>
