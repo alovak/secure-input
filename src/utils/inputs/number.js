@@ -1,4 +1,5 @@
-import { Input } from '../input';
+import { Input, Image } from '../input';
+import { visaIcon, unknownCardIcon, mastercardIcon } from '../icons';
 import RestrictedInput from 'restricted-input';
 import { number, creditCardType } from 'card-validator'
 
@@ -55,51 +56,85 @@ export default function NumberInput(options) {
   if (!options) options = {};
   if (!options.placeholder) options.placeholder = 'Card number';
 
-  const el = Input(options);
+  this.options = options;
+  this.channel = options.channel;
 
-  const formatter = new RestrictedInput({
-    element: el,
+  this._createControls();
+  this._mountEvents();
+}
+
+NumberInput.prototype._createControls = function() {
+  this.input = Input(this.options);
+  this.formatter = new RestrictedInput({
+    element: this.input,
     pattern: '{{9999}} {{9999}} {{9999}} {{9999}}'
   });
 
-  el.addEventListener('input', function(e) {
-    if (el.value === '') {
+  this.element = document.createElement('div');
+  this.element.classList.add('PowerInput');
 
-      options.channel.say('change', { 
+  console.log(visaIcon());
+
+  this.icon = visaIcon();
+  this.icon = unknownCardIcon();
+  this.element.appendChild(this.input);
+  this.element.appendChild(this.icon);
+
+  this.icons = {
+    unknown: unknownCardIcon,
+    visa: visaIcon,
+    'master-card': mastercardIcon
+  }
+
+};
+
+NumberInput.prototype._replaceIcon = function(brand) {
+  this.icon.remove();
+  this.icon = this.icons[brand]();
+  this.element.appendChild(this.icon);
+};
+
+NumberInput.prototype._mountEvents = function() {
+  this.input.addEventListener('input', function(e) {
+    this.input.parentElement.classList.remove("invalid");
+    this.input.parentElement.classList.remove("complete");
+
+    if (this.input.value === '') {
+      this.channel.say('change', { 
         type: 'number',
         empty: true
       });
 
+      this._replaceIcon('unknown');
+
       return;
     }
 
-    const validationResult = number(el.value);
+    const validationResult = number(this.input.value);
 
-    formatter.setPattern(generatePattern(validationResult.card));
-
-    el.classList.remove("invalid");
-    el.classList.remove("complete");
+    this.formatter.setPattern(generatePattern(validationResult.card));
 
     if (validationResult.isPotentiallyValid !== true) {
-      options.channel.say('change', { 
+      this.channel.say('change', { 
         type: 'number',
         isInvalid: true
       });
 
-      el.classList.add("invalid");
+      this.input.parentElement.classList.add("invalid");
     } else {
+      if (validationResult.isValid === true) this.input.parentElement.classList.add("complete");
 
-      if (validationResult.isValid === true) el.classList.add("complete");
+      let brand = validationResult.card ? validationResult.card.type : 'unknown';
 
-      options.channel.say('change', { 
+      this._replaceIcon(brand);
+
+      this.channel.say('change', { 
         type: 'number',
         complete: validationResult.isValid,
         card: {
-          brand: validationResult.card ? validationResult.card.type : 'unknown'
+          brand: brand
         }
       });
     }
-  });
-
-  return el;
-}
+  }.bind(this));
+};
