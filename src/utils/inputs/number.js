@@ -73,8 +73,6 @@ NumberInput.prototype._createControls = function() {
   this.element = document.createElement('div');
   this.element.classList.add('PowerInput');
 
-  console.log(visaIcon());
-
   this.icon = visaIcon();
   this.icon = unknownCardIcon();
   this.element.appendChild(this.input);
@@ -85,13 +83,12 @@ NumberInput.prototype._createControls = function() {
     visa: visaIcon,
     'master-card': mastercardIcon
   }
-
 };
 
 NumberInput.prototype._replaceIcon = function(brand) {
   this.icon.remove();
-  this.icon = this.icons[brand]();
-  this.element.appendChild(this.icon);
+  this.icon = (this.icons[brand] || unknownCardIcon)();
+  if (this.icon) this.element.appendChild(this.icon);
 };
 
 NumberInput.prototype._mountEvents = function() {

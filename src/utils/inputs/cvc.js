@@ -21,62 +21,80 @@ function generatePattern(length) {
   return PATTERN_CACHE[length];
 }
 
-export default function CvcInput(options) {
+export default function ExpInput(options) {
   if (!options) options = {};
   if (!options.placeholder) options.placeholder = 'CVV';
 
-  const el = Input(options);
+  this.options = options;
+  this.channel = options.channel;
+  this.maxLength = 3;
 
-  const formatter = new RestrictedInput({
-    element: el,
+  this._createControls();
+  this._mountEvents();
+}
+
+ExpInput.prototype._createControls = function() {
+  this.input = Input(this.options);
+  this.formatter = new RestrictedInput({
+    element: this.input,
     pattern: '{{999}}'
   });
 
-  let maxLength = 3;
+  this.element = document.createElement('div');
+  this.element.classList.add('PowerInput');
+  this.element.appendChild(this.input);
+};
 
-  options.channel.on('updateValidation', function(data) {
-    const brand = (data && data.brand && data.brand !== 'unknown') ? data.brand : 'visa';
-    const type = creditCardType.getTypeInfo(brand);
+ExpInput.prototype._setState = function(state) {
+  this.input.parentElement.classList.add(state);
+};
 
-    el.placeholder = type.code.name;
-    formatter.setPattern(generatePattern(type.code.size));
-    maxLength = type.code.size;
+ExpInput.prototype._resetState = function(state) {
+  this.input.parentElement.classList.remove("invalid");
+  this.input.parentElement.classList.remove("complete");
+};
 
-    el.setAttribute('maxlength', maxLength);
-  });
+ExpInput.prototype._mountEvents = function() {
+  this.input.addEventListener('input', function(e) {
+    this._resetState();
 
-  el.addEventListener('input', function(e) {
-    if (el.value === '') {
-      options.channel.say('change', { 
-        type: 'exp',
+    if (this.input.value === '') {
+      this.channel.say('change', { 
+        type: 'cvc',
         empty: true
       });
 
       return;
     }
 
-    const validationResult = cvv(el.value, maxLength);
-
-    el.classList.remove("invalid");
-    el.classList.remove("complete");
+    const validationResult = cvv(this.input.value, this.maxLength);
 
     if (validationResult.isPotentiallyValid !== true) {
-      options.channel.say('change', { 
+      this.channel.say('change', { 
         type: 'cvc',
         isInvalid: true
       });
 
-      el.classList.add("invalid");
+      this._setState('invalid');
     } else {
 
-      if (validationResult.isValid === true) el.classList.add("complete");
+      if (validationResult.isValid === true) this._setState('complete');
 
-      options.channel.say('change', { 
+      this.channel.say('change', { 
         type: 'cvc',
         complete: validationResult.isValid
       });
     }
-  });
+  }.bind(this));
 
-  return el;
-}
+  this.channel.on('updateValidation', function(data) {
+    const brand = (data && data.brand && data.brand !== 'unknown') ? data.brand : 'visa';
+    const type = creditCardType.getTypeInfo(brand);
+
+    this.input.placeholder = type.code.name;
+    this.formatter.setPattern(generatePattern(type.code.size));
+    this.maxLength = type.code.size;
+
+    this.input.setAttribute('maxlength', this.maxLength);
+  }.bind(this));
+};

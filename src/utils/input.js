@@ -67,9 +67,9 @@ function Image(options) {
   if (options.name)  el.name = options.name;
   if (options.id) el.id = options.id;
   if (options.class) el.classList.add(options.class);
-  if (options.src) el.classList.add(options.src);
+  if (options.src) el.src = options.src;
 
   return el;
 }
 
-export { Input, HiddenInput, TabHandler }
+export { Input, HiddenInput, TabHandler, Image }

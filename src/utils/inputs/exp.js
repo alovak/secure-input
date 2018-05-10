@@ -6,16 +6,40 @@ export default function ExpInput(options) {
   if (!options) options = {};
   if (!options.placeholder) options.placeholder = 'MM / YY';
 
-  const el = Input(options);
+  this.options = options;
+  this.channel = options.channel;
 
-  new RestrictedInput({
-    element: el,
+  this._createControls();
+  this._mountEvents();
+}
+
+ExpInput.prototype._createControls = function() {
+  this.input = Input(this.options);
+  this.formatter = new RestrictedInput({
+    element: this.input,
     pattern: '{{99}} / {{99}}'
   });
 
-  el.addEventListener('input', function(e) {
-    if (el.value === '') {
-      options.channel.say('change', { 
+  this.element = document.createElement('div');
+  this.element.classList.add('PowerInput');
+  this.element.appendChild(this.input);
+};
+
+ExpInput.prototype._setState = function(state) {
+  this.input.parentElement.classList.add(state);
+};
+
+ExpInput.prototype._resetState = function(state) {
+  this.input.parentElement.classList.remove("invalid");
+  this.input.parentElement.classList.remove("complete");
+};
+
+ExpInput.prototype._mountEvents = function() {
+  this.input.addEventListener('input', function(e) {
+    this._resetState();
+
+    if (this.input.value === '') {
+      this.channel.say('change', { 
         type: 'exp',
         empty: true
       });
@@ -23,28 +47,23 @@ export default function ExpInput(options) {
       return;
     }
 
-    const validationResult = expirationDate(el.value);
-
-    el.classList.remove("invalid");
-    el.classList.remove("complete");
+    const validationResult = expirationDate(this.input.value);
 
     if (validationResult.isPotentiallyValid !== true) {
-      options.channel.say('change', { 
+      this.channel.say('change', { 
         type: 'exp',
         isInvalid: true
       });
 
-      el.classList.add("invalid");
+      this._setState('invalid');
     } else {
 
-      if (validationResult.isValid === true) el.classList.add("complete");
+      if (validationResult.isValid === true) this._setState('complete');
 
-      options.channel.say('change', { 
+      this.channel.say('change', { 
         type: 'exp',
         complete: validationResult.isValid
       });
     }
-  });
-
-  return el;
-}
+  }.bind(this));
+};

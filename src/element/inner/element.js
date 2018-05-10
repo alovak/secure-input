@@ -51,7 +51,9 @@ Element.prototype._createControls = function() {
 
   this.container = document.querySelector('#container');
 
-  this.input = new inputs[this.type]({ channel: this.channel });
+  this.element = new inputs[this.type]({ channel: this.channel });
+
+  this.input = this.element.input;
 
   this.container.append(TabHandler(function() {
     this.channel.say('focus');
@@ -61,7 +63,7 @@ Element.prototype._createControls = function() {
     this.channel.say('forwardFocus', { direction: 'backward' });
   }.bind(this)));
 
-  this.container.append(this.input);
+  this.container.append(this.element.element);
 
   this.container.append(TabHandler(function() {
     this.channel.say('forwardFocus', { direction: 'forward' });
@@ -69,7 +71,8 @@ Element.prototype._createControls = function() {
 };
 
 Element.prototype._applyStyle = function() {
-  this.input.classList.add("PowerInput");
+  // this.container.classList.add('PowerInput');
+  // this.input.classList.add("PowerInput");
 
   generateStyle(this.options.style);
 

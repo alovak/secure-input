@@ -7,6 +7,7 @@ export default function generateStyle(styles) {
     ":hover",
     "backgroundColor",
     "color",
+    "fill",
     "fontFamily",
     "fontSize",
     "fontSmoothing",
@@ -46,7 +47,8 @@ export default function generateStyle(styles) {
 
   Object.keys(styles).forEach((variant) => {
     if (selectors[variant]) {
-      applyStyle(selectors[variant], styles[variant]);
+      applyStyle(selectors[variant] + ' input', styles[variant]);
+      applyStyle(selectors[variant] + ' svg', { fill: styles[variant].color });
     }
   });
 }
