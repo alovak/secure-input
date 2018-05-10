@@ -59,6 +59,17 @@ function TabHandler(onFocusHandler) {
   return el;
 }
 
+function Image(options) {
+  const el = document.createElement('img');
 
+  options = options || {};
+
+  if (options.name)  el.name = options.name;
+  if (options.id) el.id = options.id;
+  if (options.class) el.classList.add(options.class);
+  if (options.src) el.classList.add(options.src);
+
+  return el;
+}
 
 export { Input, HiddenInput, TabHandler }

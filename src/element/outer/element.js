@@ -149,7 +149,6 @@ Element.prototype._onForwardFocus = function(data) {
   focusableElements[nextIndex].focus();
 };
 
-
 Element.prototype._onChange = function(data) {
   if (!this.userCallbacks.change) return;
 
