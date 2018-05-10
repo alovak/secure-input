@@ -21,7 +21,7 @@ function generatePattern(length) {
   return PATTERN_CACHE[length];
 }
 
-export default function ExpInput(options) {
+export default function CvcInput(options) {
   if (!options) options = {};
   if (!options.placeholder) options.placeholder = 'CVV';
 
@@ -33,7 +33,7 @@ export default function ExpInput(options) {
   this._mountEvents();
 }
 
-ExpInput.prototype._createControls = function() {
+CvcInput.prototype._createControls = function() {
   this.input = Input(this.options);
   this.formatter = new RestrictedInput({
     element: this.input,
@@ -45,16 +45,16 @@ ExpInput.prototype._createControls = function() {
   this.element.appendChild(this.input);
 };
 
-ExpInput.prototype._setState = function(state) {
+CvcInput.prototype._setState = function(state) {
   this.input.parentElement.classList.add(state);
 };
 
-ExpInput.prototype._resetState = function(state) {
+CvcInput.prototype._resetState = function(state) {
   this.input.parentElement.classList.remove("invalid");
   this.input.parentElement.classList.remove("complete");
 };
 
-ExpInput.prototype._mountEvents = function() {
+CvcInput.prototype._mountEvents = function() {
   this.input.addEventListener('input', function(e) {
     this._resetState();
 

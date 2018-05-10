@@ -1,5 +1,5 @@
 import { Input, Image } from '../input';
-import { visaIcon, unknownCardIcon, mastercardIcon } from '../icons';
+import { visaIcon, unknownCardIcon, masterCardIcon, americanExpressIcon, discoverIcon, jcbIcon } from '../icons';
 import RestrictedInput from 'restricted-input';
 import { number, creditCardType } from 'card-validator'
 
@@ -81,7 +81,10 @@ NumberInput.prototype._createControls = function() {
   this.icons = {
     unknown: unknownCardIcon,
     visa: visaIcon,
-    'master-card': mastercardIcon
+    'master-card': masterCardIcon,
+    'american-express': americanExpressIcon,
+    discover: discoverIcon,
+    jcb: jcbIcon
   }
 };
 
