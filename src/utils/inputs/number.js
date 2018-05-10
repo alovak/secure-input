@@ -77,7 +77,6 @@ export default function NumberInput(options) {
 
     formatter.setPattern(generatePattern(validationResult.card));
 
-
     el.classList.remove("invalid");
     el.classList.remove("complete");
 
