@@ -40,6 +40,38 @@ Element.prototype.mount = function (elementId) {
   return this;
 };
 
+Element.prototype.focus = function() {
+  if (this.isFocused) return;
+
+  this.isFocused = true;
+  this.privateInput.focus();
+  if (!isIos()) this.privateInput.blur();
+  this.container.classList.add("PowerElement--focus");
+  this.channel.say('focus');
+};
+
+Element.prototype.blur = function() {
+  if (!this.isFocused) return;
+
+  this.container.classList.remove("PowerElement--focus");
+  this.isFocused = false;
+
+  this.iframe.blur();
+  this.iframe.contentWindow.blur();
+
+  if (!isIos()) return;
+
+  
+  this.privateInputSafari.focus();
+  this.privateInputSafari.blur();
+};
+
+Element.prototype.addEventListener = function(event, callback) {
+  (this.userCallbacks[event] || (this.userCallbacks[event] = [])).push(callback);
+};
+
+// private methods
+
 Element.prototype._mount = function(containerId) {
   if (this.isMounted) return;
 
@@ -82,19 +114,6 @@ Element.prototype._mountEvents = function() {
 Element.prototype._onMounted = function(data) {
 };
 
-Element.prototype.focus = function() {
-  console.log('called outer focus');
-  console.log('is focused', this.isFocused);
-  if (this.isFocused) return;
-
-  this.isFocused = true;
-  this.privateInput.focus();
-  if (!isIos()) this.privateInput.blur();
-  this.container.classList.add("PowerElement--focus");
-  this.channel.say('focus');
-};
-
-
 Element.prototype._onResize = function(data) {
   this.iframe.height = data.size.height;
 };
@@ -103,21 +122,6 @@ Element.prototype._onFocus = function() {
   this.focus();
 };
 
-Element.prototype.blur = function() {
-  if (!this.isFocused) return;
-
-  this.container.classList.remove("PowerElement--focus");
-  this.isFocused = false;
-
-  this.iframe.blur();
-  this.iframe.contentWindow.blur();
-
-  if (!isIos()) return;
-
-  
-  this.privateInputSafari.focus();
-  this.privateInputSafari.blur();
-};
 
 Element.prototype._onBlur = function() {
   this.blur();
@@ -125,7 +129,6 @@ Element.prototype._onBlur = function() {
 
 
 Element.prototype._onForwardFocus = function(data) {
-  console.log('_onForwardFocus', data);
   // https://allyjs.io/data-tables/focusable.html#iframe-element
   const focusable = Array.prototype.slice.call(document.querySelectorAll("a[href], area[href], button:not([disabled]), embed, input:not([disabled]), object, select:not([disabled]), textarea:not([disabled]), *[tabindex], *[contenteditable]"));
 
@@ -143,20 +146,11 @@ Element.prototype._onForwardFocus = function(data) {
 
   if (nextIndex > focusableElements.length - 1) nextIndex = 0;
 
-  console.log('set focus on index', nextIndex);
-  console.log('set focus on element', focusableElements[nextIndex]);
-
   focusableElements[nextIndex].focus();
-};
-
-Element.prototype.addEventListener = function(event, callback) {
-  (this.userCallbacks[event] || (this.userCallbacks[event] = [])).push(callback);
 };
 
 
 Element.prototype._onChange = function(data) {
-  console.log('element changed', data);
-
   if (!this.userCallbacks.change) return;
 
   this.userCallbacks.change.forEach((callback) => {

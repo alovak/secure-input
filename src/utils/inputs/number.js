@@ -95,7 +95,7 @@ export default function NumberInput(options) {
         type: 'number',
         complete: validationResult.isValid,
         card: {
-          brand: validationResult.card.type
+          brand: validationResult.card ? validationResult.card.type : 'unknown'
         }
       });
     }
