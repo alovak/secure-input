@@ -1,3 +1,5 @@
+import isIos from './is-ios';
+
 function Input(options) {
   const el = document.createElement('input');
 
@@ -8,7 +10,17 @@ function Input(options) {
   if (options.placeholder) el.placeholder = options.placeholder;
   if (options.class) el.classList.add(options.class);
 
-  options.type ? el.type = options.type : el.type = 'text';
+  if (options.type) {
+    el.type = options.type
+  } else {
+    // https://stackoverflow.com/questions/25425181/iphone-ios-presenting-html-5-keyboard-for-postal-codes
+    if (isIos()) {
+      el.type = 'text';
+      el.pattern = '\\d*';
+    } else {
+      el.type = 'tel';
+    }
+  }
 
   return el;
 }
