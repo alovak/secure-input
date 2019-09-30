@@ -1,6 +1,6 @@
 const Config = {
-  baseUrl: 'https://js.powerpayments.io',
-  apiUrl: 'https://api.powerpayments.io'
+  baseUrl: 'https://secure-input.herokuapp.com',
+  apiUrl: 'https://secure-input-api.herokuapp.com'
 };
 
 export default Config;
