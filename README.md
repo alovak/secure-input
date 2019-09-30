@@ -28,4 +28,4 @@ check what we run in bitbucket-pipelines.yml step/script and reproduce here like
 > export S3_BUCKET=cdn.powerpayments.tech
 > ./scripts/s3_deploy.sh
 
-Hello from 2019
+Hello from 2019!
