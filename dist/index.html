@@ -108,7 +108,7 @@ async("/power-payments.js?rnd=" + (Math.random() * 1e5 | 0), function() {
         var resultEl = document.getElementById('result');
 
         elements.createToken().then(function(result) {
-            resultEl.innerHTML = JSON.stringify(result);
+            resultEl.innerHTML = JSON.stringify(result, null, 2);
         });
     });
 
