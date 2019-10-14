@@ -30,6 +30,8 @@ Points 1-2 are usually solved with sending data directly to the 3rd party servic
 
 Everything starts from checkout page. Merchant creates payment form with the desired design and uses placeholders for cardholder data elements (card number, cvc, expiration date).
 
+![payment form](docs/img/form.png)
+
 ## How to Get Started
 
 ## Backend Endpoints
